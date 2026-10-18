@@ -1,0 +1,1219 @@
+[
+  {
+    "q": "公司董事会由多少名董事组成？",
+    "answer": "董事会由七至十三名董事组成。",
+    "answer_contains": [
+      "七至十三名董事组成"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "easy",
+    "category": "公司治理",
+    "basis_article": "第十五条",
+    "answerable": true,
+    "id": "GOV-E-001",
+    "answer_type": "fact",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "董事会定期会议多久召开一次？",
+    "answer": "董事会定期会议每年至少召开四次，每季度至少召开一次。",
+    "answer_contains": [
+      "每年至少召开四次",
+      "每季度至少召开一次"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "easy",
+    "category": "公司治理",
+    "basis_article": "第十八条",
+    "answerable": true,
+    "id": "GOV-E-002",
+    "answer_type": "fact",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "公司监事会会议多久至少召开一次？",
+    "answer": "监事会每六个月至少召开一次会议。",
+    "answer_contains": [
+      "每六个月至少召开一次会议"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "easy",
+    "category": "公司治理",
+    "basis_article": "第二十七条",
+    "answerable": true,
+    "id": "GOV-E-003",
+    "answer_type": "fact",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "公司监事会中职工代表监事的比例不低于多少？",
+    "answer": "职工代表监事的比例不低于三分之一。",
+    "answer_contains": [
+      "职工代表监事的比例不低于三分之一"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "easy",
+    "category": "公司治理",
+    "basis_article": "第二十五条",
+    "answerable": true,
+    "id": "GOV-E-004",
+    "answer_type": "fact",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "公司新录用员工的试用期是如何规定的？",
+    "answer": "试用期期限根据劳动合同期限确定，最长不超过六个月。",
+    "answer_contains": [
+      "试用期期限根据劳动合同期限确定",
+      "最长不超过六个月"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "easy",
+    "category": "人力资源",
+    "basis_article": "第五十七条",
+    "answerable": true,
+    "id": "HR-E-005",
+    "answer_type": "enumeration",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "员工提出辞职，应提前多少日以书面形式通知公司？",
+    "answer": "员工提出辞职的，应当提前三十日以书面形式通知公司；试用期内辞职的，应当提前三日通知公司。",
+    "answer_contains": [
+      "提前三十日以书面形式通知",
+      "提前三日通知"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "easy",
+    "category": "人力资源",
+    "basis_article": "第七十七条",
+    "answerable": true,
+    "id": "HR-E-006",
+    "answer_type": "enumeration",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "公司应当自用工之日起多久内与员工订立书面劳动合同？",
+    "answer": "公司应当自用工之日起一个月内与员工订立书面劳动合同。",
+    "answer_contains": [
+      "自用工之日起一个月内"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "easy",
+    "category": "人力资源",
+    "basis_article": "第五十六条",
+    "answerable": true,
+    "id": "HR-E-007",
+    "answer_type": "fact",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "董事会专门委员会会议应当有多少委员出席方可举行？",
+    "answer": "专门委员会会议应当有三分之二以上委员出席方可举行。",
+    "answer_contains": [
+      "三分之二以上委员出席方可举行"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "easy",
+    "category": "公司治理",
+    "basis_article": "第二十三条",
+    "answerable": true,
+    "id": "GOV-E-008",
+    "answer_type": "fact",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "股东会会议记录应当如何保存？",
+    "answer": "股东会会议记录应当与出席股东的签名册及代理出席的委托书一并保存，保存期限不少于十年。",
+    "answer_contains": [
+      "与出席股东的签名册及代理出席的委托书一并保存",
+      "保存期限不少于十年"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "easy",
+    "category": "公司治理",
+    "basis_article": "第十三条",
+    "answerable": true,
+    "id": "GOV-E-009",
+    "answer_type": "fact",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "总经理办公会的召开频次是如何规定的？",
+    "answer": "总经理办公会应当定期召开，原则上每月不少于一次，并可根据需要召开临时会议。",
+    "answer_contains": [
+      "每月不少于一次",
+      "可根据需要召开临时会议"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "easy",
+    "category": "公司治理",
+    "basis_article": "第三十二条",
+    "answerable": true,
+    "id": "GOV-E-010",
+    "answer_type": "enumeration",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "公司绩效薪酬递延支付的期限不少于多少年？",
+    "answer": "对相关人员实行的绩效薪酬递延支付期限不少于三年。",
+    "answer_contains": [
+      "递延支付期限不少于三年"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "easy",
+    "category": "人力资源",
+    "basis_article": "第六十九条",
+    "answerable": true,
+    "id": "HR-E-011",
+    "answer_type": "fact",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "员工个人信息发生变化后，应当在多少个工作日内告知人力资源部？",
+    "answer": "员工个人信息发生变化的，应当在变更后十个工作日内告知人力资源部。",
+    "answer_contains": [
+      "变更后十个工作日内"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "easy",
+    "category": "人力资源",
+    "basis_article": "第五十九条",
+    "answerable": true,
+    "id": "HR-E-012",
+    "answer_type": "fact",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "公司信息披露事务由谁负责？",
+    "answer": "董事会秘书负责公司信息披露事务、投资者关系管理，协调公司与监管机构、证券交易所、股东之间的沟通联系。",
+    "answer_contains": [
+      "董事会秘书"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "easy",
+    "category": "信息披露",
+    "basis_article": "第三十九条",
+    "answerable": true,
+    "id": "DISC-E-013",
+    "answer_type": "fact",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "信息技术负责人负责公司哪些工作？",
+    "answer": "信息技术负责人负责公司信息技术治理、信息系统建设与运维、信息安全管理、数据治理等工作，保障信息系统安全稳定运行。",
+    "answer_contains": [
+      "信息技术治理",
+      "信息系统建设与运维",
+      "信息安全管理",
+      "数据治理"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "easy",
+    "category": "信息技术",
+    "basis_article": "第三十八条",
+    "answerable": true,
+    "id": "IT-E-014",
+    "answer_type": "enumeration",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "独立董事在董事会中的人数和构成有什么要求？",
+    "answer": "董事会由七至十三名董事组成，其中独立董事不少于三分之一，且至少包括一名会计专业人士。（依据第十五条）",
+    "answer_contains": [
+      "独立董事不少于三分之一",
+      "至少包括一名会计专业人士"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "easy",
+    "category": "公司治理",
+    "basis_article": "第十五条",
+    "answerable": true,
+    "id": "GOV-E-015",
+    "answer_type": "enumeration",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "出现哪些情形时，公司应当在两个月内召开临时股东会？",
+    "answer": "应当在两个月内召开临时股东会的情形包括：董事人数不足法定人数或者公司章程所定人数的三分之二时；公司未弥补的亏损达实收股本总额三分之一时；单独或者合计持有公司百分之十以上股份的股东请求时；董事会认为必要时；监事会提议召开时；公司章程规定的其他情形。",
+    "answer_contains": [
+      "两个月内召开临时股东会",
+      "实收股本总额三分之一"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "medium",
+    "category": "公司治理",
+    "basis_article": "第十一条",
+    "answerable": true,
+    "id": "GOV-M-016",
+    "answer_type": "enumeration",
+    "question_style": "written",
+    "tags": [],
+    "expected_items": 6
+  },
+  {
+    "q": "哪些情形下应当召开临时董事会会议？",
+    "answer": "应当召开临时董事会会议的情形包括：代表十分之一以上表决权的股东提议时；三分之一以上董事提议时；监事会提议时；董事长认为必要时；二分之一以上独立董事提议时；总经理提议时；公司章程规定的其他情形。",
+    "answer_contains": [
+      "代表十分之一以上表决权的股东提议",
+      "二分之一以上独立董事提议"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "medium",
+    "category": "公司治理",
+    "basis_article": "第十八条",
+    "answerable": true,
+    "id": "GOV-M-017",
+    "answer_type": "enumeration",
+    "question_style": "written",
+    "tags": [],
+    "expected_items": 7
+  },
+  {
+    "q": "公司哪些人员的绩效薪酬应当实行递延支付，递延期限是多久？",
+    "answer": "对高级管理人员、关键岗位人员以及风险有重要影响岗位的人员，其绩效薪酬的一定比例应当实行递延支付，递延支付期限不少于三年。",
+    "answer_contains": [
+      "高级管理人员、关键岗位人员",
+      "递延支付期限不少于三年"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "medium",
+    "category": "人力资源",
+    "basis_article": "第六十九条",
+    "answerable": true,
+    "id": "HR-M-018",
+    "answer_type": "enumeration",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "公司不得录用哪些人员？",
+    "answer": "不得录用的情形包括：因违法违规行为被撤销证券从业资格且自被撤销之日起未满规定年限的；因违反证券法律法规被中国证监会采取证券市场禁入措施尚在禁入期内的；因贪污、贿赂、侵占财产、挪用财产或者破坏社会主义市场经济秩序被判处刑罚，执行期满未逾五年，或者因犯罪被剥夺政治权利执行期满未逾五年的；被开除公职或者被吊销相关执业证书未满规定年限的；与原单位存在未了结的劳动争议、竞业限制纠纷或者其他法律纠纷可能影响正常履职的；存在其他法律法规禁止从事证券业务情形的。",
+    "answer_contains": [
+      "有下列情形之一的人员，不得录用",
+      "执行期满未逾五年"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "medium",
+    "category": "人力资源",
+    "basis_article": "第五十二条",
+    "answerable": true,
+    "id": "HR-M-019",
+    "answer_type": "enumeration",
+    "question_style": "written",
+    "tags": [],
+    "expected_items": 6
+  },
+  {
+    "q": "公司回避制度对员工亲属的任职和申报有哪些规定？",
+    "answer": "公司实行回避制度，员工的配偶、直系血亲、三代以内旁系血亲、近姻亲等亲属关系人，不得在同一部门担任有直接上下级领导关系的职务，也不得在其中一方担任领导职务的部门从事组织人事、纪检监察、财务审计、合规风控等工作，存在亲属关系的人员应当主动申报。",
+    "answer_contains": [
+      "三代以内旁系血亲",
+      "应当主动申报"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "medium",
+    "category": "人力资源",
+    "basis_article": "第五十三条",
+    "answerable": true,
+    "id": "HR-M-020",
+    "answer_type": "enumeration",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "在哪些情形下，公司可以停止支付递延绩效薪酬并追索已支付部分？",
+    "answer": "在递延支付期间，如发生下列情形，公司可以停止支付相关责任人员未支付部分，并追索已支付部分：因违法违规行为被公司解除劳动合同或者被监管机构处罚的；因重大过失或者故意行为给公司造成重大损失的；所负责的业务发生重大风险事件或者重大合规事故的；存在弄虚作假、骗取绩效薪酬的；离职后发现在职期间存在应当追责情形的。",
+    "answer_contains": [
+      "停止支付相关责任人员未支付部分",
+      "追索已支付部分"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "medium",
+    "category": "人力资源",
+    "basis_article": "第六十九条",
+    "answerable": true,
+    "id": "HR-M-021",
+    "answer_type": "enumeration",
+    "question_style": "written",
+    "tags": [],
+    "expected_items": 5
+  },
+  {
+    "q": "授权书应当明确哪些内容？",
+    "answer": "授权应当以书面授权书的形式作出，明确授权事项、授权范围、授权额度、授权期限、授权条件、执行要求、报告义务和禁止转授权事项。授权书应当编号归档，由授权管理部门统一保管。",
+    "answer_contains": [
+      "授权事项、授权范围、授权额度、授权期限",
+      "编号归档"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "medium",
+    "category": "授权管理",
+    "basis_article": "第四十二条",
+    "answerable": true,
+    "id": "AUTH-M-022",
+    "answer_type": "enumeration",
+    "question_style": "written",
+    "tags": [],
+    "expected_items": 8
+  },
+  {
+    "q": "召开股东会和临时股东会，会议通知有哪些要求？",
+    "answer": "召开股东会，应当将会议召开的时间、地点和审议的事项于会议召开二十日前通知各股东；临时股东会应当于会议召开十五日前通知各股东。股东会不得对通知中未列明的事项作出决议。",
+    "answer_contains": [
+      "二十日前通知",
+      "十五日前通知"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "medium",
+    "category": "公司治理",
+    "basis_article": "第十二条",
+    "answerable": true,
+    "id": "GOV-M-023",
+    "answer_type": "enumeration",
+    "question_style": "written",
+    "tags": [],
+    "expected_items": 3
+  },
+  {
+    "q": "公司为客户开立账户应当履行哪些程序？",
+    "answer": "开户应当履行以下程序：客户身份识别；风险揭示；适当性评估；签署《证券交易委托代理协议》《风险揭示书》等协议文件；账户开立与信息录入；资料归档。",
+    "answer_contains": [
+      "开户应当履行以下程序",
+      "客户身份识别",
+      "适当性评估"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "medium",
+    "category": "经纪业务",
+    "basis_article": "第八十六条",
+    "answerable": true,
+    "id": "BROK-M-024",
+    "answer_type": "enumeration",
+    "question_style": "written",
+    "tags": [],
+    "expected_items": 6
+  },
+  {
+    "q": "公司开展经纪业务不得从事哪些行为？",
+    "answer": "公司不得接受客户的全权委托；不得向客户承诺或者保证投资收益；不得以任何方式与客户分享投资收益或者分担投资损失；不得挪用客户交易结算资金或者客户证券；不得为客户提供融资融券以外的变相融资（如非法配资）；不得泄露客户资料、账户信息、交易信息；不得诱导客户进行不必要的交易或者频繁交易以赚取佣金；不得从事法律法规、监管规定和行业自律规则禁止的其他行为。",
+    "answer_contains": [
+      "公司不得从事下列行为",
+      "接受客户的全权委托",
+      "承诺或者保证投资收益"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "medium",
+    "category": "经纪业务",
+    "basis_article": "第九十三条",
+    "answerable": true,
+    "id": "BROK-M-025",
+    "answer_type": "enumeration",
+    "question_style": "written",
+    "tags": [],
+    "expected_items": 8
+  },
+  {
+    "q": "哪些情形下公司不得为客户开立账户？",
+    "answer": "公司不得为下列情形开立账户：客户提供的身份证明文件不真实、无效或者过期；客户拒绝提供必要身份信息或者提供信息不完整；客户为法律法规、监管规定禁止开立证券账户的主体；存在其他不符合开户条件的情形。",
+    "answer_contains": [
+      "公司不得为下列情形开立账户",
+      "拒绝提供必要身份信息"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "medium",
+    "category": "客户管理",
+    "basis_article": "第八十五条",
+    "answerable": true,
+    "id": "CUST-M-026",
+    "answer_type": "enumeration",
+    "question_style": "written",
+    "tags": [],
+    "expected_items": 4
+  },
+  {
+    "q": "公司绩效考核指标包括哪几类？",
+    "answer": "绩效考核指标应当包括业绩指标（营业收入、利润、业务规模、市场份额、客户数量等）、合规与风控指标（违法违规情况、合规问题的发生与整改、风险事件、内控缺陷、客户投诉情况等）、管理指标（团队建设、人才培养、制度执行、协作配合等）、客户权益保护指标（客户适当性管理执行情况、客户投诉率、客户满意度等）。",
+    "answer_contains": [
+      "业绩指标",
+      "合规与风控指标",
+      "管理指标",
+      "客户权益保护指标"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "medium",
+    "category": "人力资源",
+    "basis_article": "第六十六条",
+    "answerable": true,
+    "id": "HR-M-027",
+    "answer_type": "enumeration",
+    "question_style": "written",
+    "tags": [],
+    "expected_items": 4
+  },
+  {
+    "q": "某董事同时担任公司控股股东的高级管理人员，是否满足独立董事的独立性要求？",
+    "answer": "不满足。独立董事应当独立履行职责，不受公司主要股东、实际控制人以及其他与公司存在利害关系的单位或者个人的影响。在控股股东处担任高管属于与公司主要股东存在利害关系的情形，不符合独立性要求。",
+    "answer_contains": [
+      "独立履行职责，不受公司主要股东"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "hard",
+    "category": "公司治理",
+    "basis_article": "第二十一条",
+    "answerable": true,
+    "id": "GOV-H-028",
+    "answer_type": "judgment",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "公司今年已召开3次临时董事会会议，若再加开1次，是否会超过制度规定的频次上限？",
+    "answer": "不会超过。制度规定了应当召开临时董事会会议的具体情形（如股东、董事、监事会、董事长、独立董事、总经理提议等），并未对临时董事会的召开次数设置上限，只要符合规定情形即可召开。",
+    "answer_contains": [
+      "应当召开临时董事会会议",
+      "总经理提议"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "hard",
+    "category": "公司治理",
+    "basis_article": "第十八条",
+    "answerable": true,
+    "id": "GOV-H-029",
+    "answer_type": "judgment",
+    "question_style": "written",
+    "tags": [
+      "推理"
+    ]
+  },
+  {
+    "q": "公司拟由合规负责人分管经纪业务部门，是否符合制度规定？",
+    "answer": "不合规。合规负责人不得兼任与合规管理职责相冲突的职务，不得分管业务部门。",
+    "answer_contains": [
+      "不得分管业务部门"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "hard",
+    "category": "合规管理",
+    "basis_article": "第三十五条",
+    "answerable": true,
+    "id": "COMP-H-030",
+    "answer_type": "judgment",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "公司能否安排首席风险官分管自营业务部门？",
+    "answer": "不能。首席风险官应当独立于业务条线，不得分管业务部门，以保证风险管理的独立性。",
+    "answer_contains": [
+      "独立于业务条线",
+      "不得分管业务部门"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "hard",
+    "category": "风险管理",
+    "basis_article": "第三十六条",
+    "answerable": true,
+    "id": "RISK-H-031",
+    "answer_type": "judgment",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "某候选人因贪污罪被判处刑罚，执行期满刚满4年，公司能否录用？",
+    "answer": "不能录用。因贪污、贿赂、侵占财产、挪用财产或者破坏社会主义市场经济秩序被判处刑罚，执行期满未逾五年的不得录用；该候选人执行期满仅4年，未逾五年，属于不得录用的情形。",
+    "answer_contains": [
+      "执行期满未逾五年"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "hard",
+    "category": "人力资源",
+    "basis_article": "第五十二条",
+    "answerable": true,
+    "id": "HR-H-032",
+    "answer_type": "judgment",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "部门负责人拟将其授权事项转授权给下属，是否允许？需要满足什么条件？",
+    "answer": "原则上不允许转授权。确因工作需要转授权的，应当经原授权人书面同意，并明确转授权的范围、期限和责任；转授权不得突破原授权的范围和额度，接受转授权的人应当具备相应的资格和能力。",
+    "answer_contains": [
+      "原则上不允许转授权",
+      "原授权人书面同意"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "hard",
+    "category": "授权管理",
+    "basis_article": "第四十四条",
+    "answerable": true,
+    "id": "AUTH-H-033",
+    "answer_type": "judgment",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "某客户拒绝提供收入证明且身份信息不完整，公司能否为其开立账户？",
+    "answer": "不能。客户拒绝提供必要身份信息或者提供信息不完整的，公司不得为其开立账户。",
+    "answer_contains": [
+      "拒绝提供必要身份信息或者提供信息不完整"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "hard",
+    "category": "客户管理",
+    "basis_article": "第八十五条",
+    "answerable": true,
+    "id": "CUST-H-034",
+    "answer_type": "judgment",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "公司拟由一名非独立董事担任审计委员会主任委员，是否符合规定？",
+    "answer": "不合规。审计委员会主任委员应当由独立董事中的会计专业人士担任，且审计委员会中独立董事应当占多数并担任主任委员，不能由非独立董事担任。",
+    "answer_contains": [
+      "审计委员会主任委员应当由独立董事中的会计专业人士担任"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "hard",
+    "category": "公司治理",
+    "basis_article": "第二十二条",
+    "answerable": true,
+    "id": "GOV-H-035",
+    "answer_type": "judgment",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "某员工离职后，公司发现其在职期间存在弄虚作假、骗取绩效薪酬的行为，能否追索已支付的绩效薪酬？",
+    "answer": "可以。公司建立绩效薪酬递延支付和追索扣回机制；在递延支付期间，离职后发现在职期间存在应当追责情形的，公司可以停止支付相关责任人员未支付部分，并追索已支付部分。",
+    "answer_contains": [
+      "离职后发现在职期间存在应当追责情形"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "hard",
+    "category": "人力资源",
+    "basis_article": "第六十九条",
+    "answerable": true,
+    "id": "HR-H-036",
+    "answer_type": "judgment",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "员工未完成培训任务的，公司应当如何处理？",
+    "answer": "未按规定完成培训任务的，应当及时补训；连续未完成培训任务的，可以暂缓晋升或者调整岗位。",
+    "answer_contains": [
+      "连续未完成培训任务的",
+      "暂缓晋升或者调整岗位"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "hard",
+    "category": "人力资源",
+    "basis_article": "第六十三条",
+    "answerable": true,
+    "id": "HR-H-037",
+    "answer_type": "judgment",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "授权作出后，因法律法规变化导致原授权事项不合规，应当如何处理？",
+    "answer": "授权应当予以调整或者终止。法律法规、监管规定发生变化，导致原授权事项不合法或者不合规的，属于授权调整或者终止的法定情形。",
+    "answer_contains": [
+      "法律法规、监管规定发生变化",
+      "授权应当予以调整或者终止"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "hard",
+    "category": "授权管理",
+    "basis_article": "第四十五条",
+    "answerable": true,
+    "id": "AUTH-H-038",
+    "answer_type": "judgment",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "交易差错给客户造成损失的责任如何划分？公司能否向员工追偿？",
+    "answer": "因公司原因造成的交易差错给客户造成损失的，公司应当依法承担相应责任；因员工重大过失造成的，公司可以向责任人追偿。",
+    "answer_contains": [
+      "因公司原因造成的交易差错给客户造成损失的",
+      "因员工重大过失造成的，公司可以向责任人追偿"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "hard",
+    "category": "经纪业务",
+    "basis_article": "第九十五条",
+    "answerable": true,
+    "id": "BROK-H-039",
+    "answer_type": "judgment",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "q": "若公司董事会由9名董事组成，对独立董事的人数和构成有什么要求？",
+    "answer": "独立董事不少于三分之一，9名董事的董事会中独立董事至少应为3名，且其中至少包括一名会计专业人士。",
+    "answer_contains": [
+      "独立董事不少于三分之一",
+      "至少包括一名会计专业人士"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "hard",
+    "category": "公司治理",
+    "basis_article": "第十五条",
+    "answerable": true,
+    "id": "GOV-H-040",
+    "answer_type": "computation",
+    "question_style": "written",
+    "tags": [
+      "计算"
+    ]
+  },
+  {
+    "q": "某专门委员会共有5名委员，其决议至少需多少名委员通过方为有效？",
+    "answer": "专门委员会决议应当经全体委员的过半数通过，5名委员的专门委员会决议至少需3名委员同意方为有效。",
+    "answer_contains": [
+      "三分之二以上委员出席方可举行",
+      "全体委员的过半数通过"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "hard",
+    "category": "公司治理",
+    "basis_article": "第二十三条",
+    "answerable": true,
+    "id": "GOV-H-041",
+    "answer_type": "computation",
+    "question_style": "written",
+    "tags": [
+      "计算"
+    ]
+  },
+  {
+    "q": "公司员工每年可以享受多少天带薪年休假？",
+    "answer": "该制度未规定年休假的具体天数，仅规定员工依法享有法定节假日、年休假、婚假、丧假、产假等假期，具体天数应按国家相关规定执行。",
+    "answer_contains": [
+      "年休假"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "hard",
+    "category": "人力资源",
+    "basis_article": "第七十三条",
+    "answerable": false,
+    "id": "HR-H-042",
+    "answer_type": "fact",
+    "question_style": "written",
+    "tags": [
+      "无答案"
+    ]
+  },
+  {
+    "q": "公司客户交易结算资金具体存放在哪几家银行？",
+    "answer": "该制度未列出第三方存管的具体合作商业银行名单，仅规定客户交易结算资金应当全额存放于具有资格的商业银行，专户存储、单独管理、封闭运行，严禁挪用。",
+    "answer_contains": [
+      "具有资格的商业银行"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "hard",
+    "category": "财务管理",
+    "basis_article": "第八十八条",
+    "answerable": false,
+    "id": "FIN-H-043",
+    "answer_type": "fact",
+    "question_style": "written",
+    "tags": [
+      "无答案"
+    ]
+  },
+  {
+    "q": "公司员工加班费的具体计算公式是什么？",
+    "answer": "该制度未提供加班费的具体计算公式，仅规定员工加班应当履行审批手续，公司应当依法安排补休或者支付加班报酬。",
+    "answer_contains": [
+      "安排补休或者支付加班报酬"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "hard",
+    "category": "人力资源",
+    "basis_article": "第七十二条",
+    "answerable": false,
+    "id": "HR-H-044",
+    "answer_type": "fact",
+    "question_style": "written",
+    "tags": [
+      "无答案"
+    ]
+  },
+  {
+    "q": "公司反洗钱工作中，不同风险等级的客户分别至少多久复核一次？",
+    "answer": "高风险客户至少每半年复核一次；中风险客户至少每年复核一次，低风险客户至少每两年复核一次。",
+    "answer_contains": [
+      "高风险客户至少每半年复核一次",
+      "中风险客户至少每年复核一次",
+      "低风险客户至少每两年复核一次"
+    ],
+    "source_doc": "证券公司管理制度汇编.md",
+    "difficulty": "easy",
+    "category": "反洗钱",
+    "basis_article": "第三百四十八条",
+    "answerable": true,
+    "id": "AML-E-045",
+    "answer_type": "fact",
+    "question_style": "written",
+    "tags": []
+  },
+  {
+    "id": "GOV-E-101",
+    "q": "咱们公司董事会一般得配几个人啊？",
+    "answer": "董事会由七至十三名董事组成。",
+    "answer_contains": [
+      "七至十三名董事组成"
+    ],
+    "difficulty": "easy",
+    "category": "公司治理",
+    "basis_article": "第十五条",
+    "answerable": true,
+    "answer_type": "fact",
+    "question_style": "colloquial",
+    "tags": [
+      "口语化"
+    ],
+    "variant_of": 1,
+    "source_doc": "证券公司管理制度汇编.md"
+  },
+  {
+    "id": "HR-M-102",
+    "q": "招人的时候，哪些人是坚决不能要的？",
+    "answer": "不得录用：因违法违规被撤销证券从业资格未满规定年限的；被证监会采取市场禁入措施尚在禁入期内的；因贪污贿赂等被判处刑罚执行期满未逾五年或被剥夺政治权利执行期满未逾五年的；被开除公职或吊销执业证书未满规定年限的；与原单位存在未了结劳动争议、竞业限制纠纷的；其他法律法规禁止从事证券业务或公司认为不适合录用的情形。",
+    "answer_contains": [
+      "有下列情形之一的人员，不得录用",
+      "执行期满未逾五年"
+    ],
+    "difficulty": "medium",
+    "category": "人力资源",
+    "basis_article": "第五十二条",
+    "answerable": true,
+    "answer_type": "enumeration",
+    "expected_items": 6,
+    "question_style": "colloquial",
+    "tags": [
+      "口语化"
+    ],
+    "source_doc": "证券公司管理制度汇编.md"
+  },
+  {
+    "id": "HR-E-103",
+    "q": "员工想辞职，得提前多少天跟公司打招呼？",
+    "answer": "应当提前三十日以书面形式通知公司；试用期内辞职的，应当提前三日通知公司。",
+    "answer_contains": [
+      "提前三十日以书面形式通知",
+      "提前三日通知"
+    ],
+    "difficulty": "easy",
+    "category": "人力资源",
+    "basis_article": "第七十七条",
+    "answerable": true,
+    "answer_type": "fact",
+    "question_style": "colloquial",
+    "tags": [
+      "口语化"
+    ],
+    "source_doc": "证券公司管理制度汇编.md"
+  },
+  {
+    "id": "BROK-M-104",
+    "q": "客户来开户，咱们得走哪些步骤？",
+    "answer": "客户身份识别；风险揭示；适当性评估；签署《证券交易委托代理协议》《风险揭示书》等协议文件；账户开立与信息录入；资料归档。",
+    "answer_contains": [
+      "开户应当履行以下程序",
+      "客户身份识别",
+      "适当性评估"
+    ],
+    "difficulty": "medium",
+    "category": "经纪业务",
+    "basis_article": "第八十六条",
+    "answerable": true,
+    "answer_type": "enumeration",
+    "expected_items": 6,
+    "question_style": "colloquial",
+    "tags": [
+      "口语化"
+    ],
+    "source_doc": "证券公司管理制度汇编.md"
+  },
+  {
+    "id": "COMP-H-105",
+    "q": "合规总监能不能兼着管业务部门？",
+    "answer": "不能。合规负责人不得兼任与合规管理职责相冲突的职务，不得分管业务部门。",
+    "answer_contains": [
+      "不得分管业务部门"
+    ],
+    "difficulty": "hard",
+    "category": "合规管理",
+    "basis_article": "第三十五条",
+    "answerable": true,
+    "answer_type": "judgment",
+    "question_style": "colloquial",
+    "tags": [
+      "口语化",
+      "易混淆"
+    ],
+    "source_doc": "证券公司管理制度汇编.md"
+  },
+  {
+    "id": "GOV-H-106",
+    "q": "公司拟由一名独立董事担任风险管理委员会主任委员，但该独立董事并非会计专业人士，是否符合制度规定？",
+    "answer": "符合。制度仅规定审计委员会主任委员应当由独立董事中的会计专业人士担任；风险管理委员会主任委员应当由熟悉风险管理、具备相应专业能力的人员担任，未要求必须为会计专业人士。",
+    "answer_contains": [
+      "风险管理委员会主任委员应当由熟悉风险管理",
+      "审计委员会主任委员应当由独立董事中的会计专业人士担任"
+    ],
+    "difficulty": "hard",
+    "category": "公司治理",
+    "basis_articles": [
+      "第二十二条",
+      "第二十三条"
+    ],
+    "answerable": true,
+    "answer_type": "judgment",
+    "question_style": "written",
+    "tags": [
+      "跨条款",
+      "易混淆"
+    ],
+    "source_doc": "证券公司管理制度汇编.md"
+  },
+  {
+    "id": "HR-H-107",
+    "q": "员工入职时已申报近亲属在监管机构任职，任职期间其配偶又调入公司合规风控部门，是否需要再次申报并回避？",
+    "answer": "需要。存在亲属关系的人员应当主动申报、及时补充申报，由人力资源部统筹安排回避；亲属不得在其中一方担任领导职务的部门从事合规风控等工作。",
+    "answer_contains": [
+      "应当主动申报",
+      "及时补充申报",
+      "合规风控"
+    ],
+    "difficulty": "hard",
+    "category": "人力资源",
+    "basis_articles": [
+      "第五十三条",
+      "第五十四条"
+    ],
+    "answerable": true,
+    "answer_type": "judgment",
+    "question_style": "written",
+    "tags": [
+      "跨条款"
+    ],
+    "source_doc": "证券公司管理制度汇编.md"
+  },
+  {
+    "id": "AUTH-H-108",
+    "q": "部门负责人违规转授权给下属，该下属又超越授权范围审批并造成损失，公司应当如何处理？",
+    "answer": "原则上不允许转授权，确需转授权应经原授权人书面同意且不得突破原授权范围和额度；被授权人超越授权范围行使职权或滥用授权造成不良后果的，授权应当予以调整或者终止；同时合规管理部、风险管理部、审计部应定期监督检查，对违反授权管理规定的予以纠正并追究责任。",
+    "answer_contains": [
+      "原则上不允许转授权",
+      "超越授权范围行使职权",
+      "授权应当予以调整或者终止",
+      "追究责任"
+    ],
+    "difficulty": "hard",
+    "category": "授权管理",
+    "basis_articles": [
+      "第四十四条",
+      "第四十五条",
+      "第四十六条"
+    ],
+    "answerable": true,
+    "answer_type": "judgment",
+    "question_style": "written",
+    "tags": [
+      "跨条款"
+    ],
+    "source_doc": "证券公司管理制度汇编.md"
+  },
+  {
+    "id": "BROK-H-109",
+    "q": "某营业部拟以分支机构名义与客户签订一份重大业务合同，是否允许？",
+    "answer": "不允许。分支机构不得以分支机构名义对外签订重大合同、对外投资、对外提供担保、对外借款。",
+    "answer_contains": [
+      "以分支机构名义对外签订重大合同"
+    ],
+    "difficulty": "hard",
+    "category": "经纪业务",
+    "basis_article": "第四百一十条",
+    "answerable": true,
+    "answer_type": "judgment",
+    "question_style": "written",
+    "tags": [
+      "易混淆"
+    ],
+    "source_doc": "证券公司管理制度汇编.md"
+  },
+  {
+    "id": "BROK-M-110",
+    "q": "公司分支机构不得从事哪些行为？",
+    "answer": "不得：超越授权范围从事业务活动；以分支机构名义对外签订重大合同、对外投资、对外提供担保、对外借款；未经批准开展未授权业务或产品；未经批准以公司名义对外发布信息、作出承诺；设立账外账、小金库，坐支现金；擅自刻制使用印章；违规开展代客理财、接受客户全权委托；擅自聘用人员或调整员工薪酬；其他禁止行为。",
+    "answer_contains": [
+      "分支机构不得有以下行为",
+      "超越授权范围从事业务活动",
+      "擅自刻制、使用印章"
+    ],
+    "difficulty": "medium",
+    "category": "经纪业务",
+    "basis_article": "第四百一十条",
+    "answerable": true,
+    "answer_type": "enumeration",
+    "expected_items": 9,
+    "question_style": "written",
+    "tags": [
+      "易混淆"
+    ],
+    "source_doc": "证券公司管理制度汇编.md"
+  },
+  {
+    "id": "CUST-M-111",
+    "q": "公司客户开发过程中不得有哪些行为？",
+    "answer": "不得：承诺或保证投资收益；夸大、虚假或误导性宣传招揽客户；贬低同行、诋毁竞争对手；低于成本价格不正当竞争；向不符合条件的客户提供服务或销售产品；诱导客户不必要的交易或频繁交易；泄露客户信息或利用客户信息谋取不正当利益；其他禁止行为。",
+    "answer_contains": [
+      "不得有以下行为",
+      "以夸大、虚假或者误导性的宣传招揽客户",
+      "贬低同行"
+    ],
+    "difficulty": "medium",
+    "category": "客户管理",
+    "basis_article": "第三百二十条",
+    "answerable": true,
+    "answer_type": "enumeration",
+    "expected_items": 8,
+    "question_style": "written",
+    "tags": [
+      "易混淆"
+    ],
+    "source_doc": "证券公司管理制度汇编.md"
+  },
+  {
+    "id": "COMP-H-112",
+    "q": "公司合规管理部目前共有多少名专职合规人员？",
+    "answer": "该制度未规定合规管理部的具体人员编制数量，无法从现有资料中获得。",
+    "answer_contains": [],
+    "difficulty": "hard",
+    "category": "合规管理",
+    "basis_article": "",
+    "answerable": false,
+    "answer_type": "judgment",
+    "question_style": "written",
+    "tags": [
+      "无答案"
+    ],
+    "source_doc": "证券公司管理制度汇编.md"
+  },
+  {
+    "id": "GOV-H-113",
+    "q": "公司董事长2025年度的薪酬总额是多少？",
+    "answer": "该制度未规定董事长的具体薪酬金额，薪酬政策由提名与薪酬委员会制定、董事会审议确定，无法从现有资料中获得具体数额。",
+    "answer_contains": [],
+    "difficulty": "hard",
+    "category": "公司治理",
+    "basis_article": "",
+    "answerable": false,
+    "answer_type": "fact",
+    "question_style": "written",
+    "tags": [
+      "无答案"
+    ],
+    "source_doc": "证券公司管理制度汇编.md"
+  },
+  {
+    "id": "RISK-H-114",
+    "q": "公司上一年度共发生多少起操作风险事件？",
+    "answer": "该制度未记载公司历年的风险事件统计数据，无法从现有资料中获得。",
+    "answer_contains": [],
+    "difficulty": "hard",
+    "category": "风险管理",
+    "basis_article": "",
+    "answerable": false,
+    "answer_type": "fact",
+    "question_style": "written",
+    "tags": [
+      "无答案"
+    ],
+    "source_doc": "证券公司管理制度汇编.md"
+  },
+  {
+    "id": "IB-M-115",
+    "q": "投资银行业务的持续督导工作包括哪些内容？",
+    "answer": "督导发行人规范运作、履行信息披露义务、规范募集资金使用、履行承诺事项；对发行人存在的重大问题和风险进行核查和披露；按监管规定出具持续督导文件（如跟踪报告、保荐工作总结报告等）。",
+    "answer_contains": [
+      "持续督导工作包括",
+      "督导发行人规范运作",
+      "保荐工作总结报告"
+    ],
+    "difficulty": "medium",
+    "category": "投资银行业务",
+    "basis_article": "第一百三十条",
+    "answerable": true,
+    "answer_type": "enumeration",
+    "expected_items": 3,
+    "question_style": "written",
+    "tags": [],
+    "source_doc": "证券公司管理制度汇编.md"
+  },
+  {
+    "id": "AM-M-116",
+    "q": "公司资产管理业务应当与哪些业务实行有效隔离？",
+    "answer": "资产管理业务应当与自营业务、经纪业务、投资银行业务等实行有效隔离，防范利益冲突。",
+    "answer_contains": [
+      "与自营业务、经纪业务、投资银行业务等实行有效隔离"
+    ],
+    "difficulty": "medium",
+    "category": "资产管理业务",
+    "basis_article": "第一百五十六条",
+    "answerable": true,
+    "answer_type": "fact",
+    "question_style": "written",
+    "tags": [],
+    "source_doc": "证券公司管理制度汇编.md"
+  },
+  {
+    "id": "CB-M-117",
+    "q": "逐日盯市制度中，维持担保比例低于预警线或平仓线时公司应当如何处理？",
+    "answer": "公司应当对每个交易日客户的信用账户进行盯市，计算维持担保比例。低于预警线的，应当及时通知客户追加担保物或者了结部分交易；低于平仓线的，公司应当按照合同约定启动强制平仓程序，并保留通知记录（电话录音、短信、APP推送、邮件等）。",
+    "answer_contains": [
+      "维持担保比例",
+      "低于预警线",
+      "低于平仓线",
+      "强制平仓"
+    ],
+    "difficulty": "medium",
+    "category": "信用业务",
+    "basis_article": "第一百八十条",
+    "answerable": true,
+    "answer_type": "enumeration",
+    "expected_items": 2,
+    "question_style": "written",
+    "tags": [],
+    "source_doc": "证券公司管理制度汇编.md"
+  },
+  {
+    "id": "COMP-M-118",
+    "q": "合规审查意见为\"不合规\"的事项，能否提交决策机构审议？",
+    "answer": "不能。合规审查意见为\"不合规\"或者\"需修改后合规\"的事项，在相关问题解决前不得提交决策机构审议或者对外报送、对外发布。确因特殊情况需要先行推进的，应当由合规负责人签署意见，报董事会审议决定，并同时向监管机构报告。",
+    "answer_contains": [
+      "在相关问题解决前不得提交决策机构审议",
+      "合规负责人签署意见"
+    ],
+    "difficulty": "medium",
+    "category": "合规管理",
+    "basis_article": "第二百零五条",
+    "answerable": true,
+    "answer_type": "judgment",
+    "question_style": "written",
+    "tags": [],
+    "source_doc": "证券公司管理制度汇编.md"
+  },
+  {
+    "id": "IC-M-119",
+    "q": "公司内部审计部门在什么领导下开展工作，向谁报告？",
+    "answer": "公司设立独立的内部审计部门（稽核审计部），在董事会审计委员会的领导下开展工作，向董事会审计委员会和经营管理层报告工作，独立行使审计监督职权，不受其他部门和个人的干涉。",
+    "answer_contains": [
+      "董事会审计委员会的领导下开展工作",
+      "独立行使审计监督职权"
+    ],
+    "difficulty": "medium",
+    "category": "内部控制",
+    "basis_article": "第二百六十条",
+    "answerable": true,
+    "answer_type": "fact",
+    "question_style": "written",
+    "tags": [],
+    "source_doc": "证券公司管理制度汇编.md"
+  },
+  {
+    "id": "IT-M-120",
+    "q": "公司信息技术管理的归口部门是哪个，其他部门如何配合？",
+    "answer": "公司信息技术部门（信息技术部）是信息技术管理的归口部门，负责信息系统规划、建设、运维、安全管理和技术支持等工作；各业务部门应当指定信息技术对接人员，配合信息技术部门开展工作。",
+    "answer_contains": [
+      "信息技术部",
+      "归口部门",
+      "指定信息技术对接人员"
+    ],
+    "difficulty": "medium",
+    "category": "信息技术",
+    "basis_article": "第二百九十条",
+    "answerable": true,
+    "answer_type": "fact",
+    "question_style": "written",
+    "tags": [],
+    "source_doc": "证券公司管理制度汇编.md"
+  },
+  {
+    "id": "INC-M-121",
+    "q": "员工在自媒体发布与公司业务、证券市场、投资建议相关的信息时，不得有哪些行为？",
+    "answer": "不得发布内幕信息、未公开信息、公司商业秘密；不得发布未经公司审核的产品推介、投资建议等信息；不得发布有损公司形象、行业形象的信息；不得以公司名义或暗示公司身份发布个人观点误导公众；不得违规承诺收益、进行误导性宣传；自媒体账号如标注公司身份或与公司业务相关的，应当向公司报备并接受管理。",
+    "answer_contains": [
+      "不得发布内幕信息、未公开信息、公司商业秘密",
+      "未经公司审核的产品推介",
+      "向公司报备"
+    ],
+    "difficulty": "medium",
+    "category": "廉洁从业",
+    "basis_article": "第三百八十条",
+    "answerable": true,
+    "answer_type": "enumeration",
+    "expected_items": 6,
+    "question_style": "written",
+    "tags": [],
+    "source_doc": "证券公司管理制度汇编.md"
+  },
+  {
+    "id": "AML-M-122",
+    "q": "公司洗钱风险自评估的频次是如何规定的？",
+    "answer": "公司应当建立洗钱风险自评估机制，定期（原则上每年不少于一次）对本公司的洗钱风险状况进行评估，形成洗钱风险自评估报告，报送反洗钱工作领导机构，并按规定向监管机构报送或者备查。",
+    "answer_contains": [
+      "每年不少于一次",
+      "洗钱风险自评估报告"
+    ],
+    "difficulty": "medium",
+    "category": "反洗钱",
+    "basis_article": "第三百五十条",
+    "answerable": true,
+    "answer_type": "fact",
+    "question_style": "written",
+    "tags": [],
+    "source_doc": "证券公司管理制度汇编.md"
+  },
+  {
+    "id": "ACC-M-123",
+    "q": "责任认定应当区分哪几类责任？",
+    "answer": "直接责任、管理责任、领导责任、监督责任四类。",
+    "answer_contains": [
+      "直接责任",
+      "管理责任",
+      "领导责任",
+      "监督责任"
+    ],
+    "difficulty": "medium",
+    "category": "监督检查与问责",
+    "basis_article": "第四百三十条",
+    "answerable": true,
+    "answer_type": "enumeration",
+    "expected_items": 4,
+    "question_style": "written",
+    "tags": [],
+    "source_doc": "证券公司管理制度汇编.md"
+  }
+]

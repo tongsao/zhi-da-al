@@ -1,0 +1,29 @@
+# 密钥配置，绝不入库
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# IDE / 编辑器
+.idea/
+.vscode/
+.trae/
+
+# 运行数据与缓存（体积大且可重建）
+data/vector_store/
+data/bm25_docs.pkl
+resource/checkpoints.db
+resource/checkpoints.db-shm
+resource/checkpoints.db-wal
+resource/rewrite_cache.json
+resource/eval_reports/
+
+# 前端
+frontend/node_modules/
+frontend/dist/
+
+# 评测产物
+tests/eval_report.json
+tests/eval_gen_report_*.json

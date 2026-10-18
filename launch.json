@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "调试: 单进程(断点生效)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "args": ["--debug"],
+            "console": "internalConsole",
+            "justMyCode": true
+        },
+        {
+            "name": "运行: 热重载",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "console": "internalConsole",
+            "justMyCode": true
+        }
+    ]
+}
