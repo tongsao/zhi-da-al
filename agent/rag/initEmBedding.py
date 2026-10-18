@@ -3,6 +3,7 @@ from typing import List
 import numpy as np
 from langchain_community.embeddings import DashScopeEmbeddings
 
+
 # 向量模型归一化
 class NormalizeDashScopeEmbeddings(DashScopeEmbeddings):
     def _12_normalize(self,vecs):

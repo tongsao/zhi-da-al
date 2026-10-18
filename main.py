@@ -1,9 +1,11 @@
-from fastapi import FastAPI
-import sys
+
 import uvicorn
+from fastapi import FastAPI
 from langfuse import Langfuse
 
-from api import ragFileController, chatController
+from api import chatController, ragFileController
+from model.initDataBase import Base, engine
+from service.evalService import failStaleGenRuns
 
 app = FastAPI(
     title="企业智达服务助手",
@@ -14,8 +16,6 @@ app.include_router(ragFileController.router)
 app.include_router(chatController.router)
 
 # 自动建缺失的表（checkfirst 只建新表，不碰旧表）；DB 不可用时降级为告警，不阻断启动
-from model.initDataBase import Base, engine
-from service.evalService import failStaleGenRuns
 try:
     Base.metadata.create_all(engine)
     # 生成评估跑在后台线程里，进程重启会把它丢掉，残留的 running 记录需标失败，否则一直挡着新评测
@@ -43,6 +43,7 @@ async def startup():
 
 if __name__ == '__main__':
     import asyncio
+
     import uvicorn
 
     config = uvicorn.Config(app, host="127.0.0.1", port=8000)

@@ -6,15 +6,17 @@ from typing import AsyncIterator
 
 from fastapi import APIRouter, Request
 from fastapi.responses import StreamingResponse
-
 from langchain_core.messages import HumanMessage
 
 from agent.handle.llm_stream_handle import CancelToken, StreamHandle
-from schema.schemas import Response, QaFeedback
-
+from schema.schemas import QaFeedback, Response
 from service.chatService import (
-    queryConversationId, queryHistoryMessage, deleteHistoryMessage,
-    saveQaFeedback, queryFeedbackStats, queryFeedbackList,
+    deleteHistoryMessage,
+    queryConversationId,
+    queryFeedbackList,
+    queryFeedbackStats,
+    queryHistoryMessage,
+    saveQaFeedback,
 )
 from tools.agent_tools import getChatAgent
 
@@ -229,7 +231,7 @@ async def stop_generation(conversation_id: int):
 
 @router.get("/chat/conversation_id")
 def getConversationId():
-    return queryConversationId();
+    return queryConversationId()
 
 @router.get("/chat/gethistory")
 def getHistoryMessage(conversation_id):

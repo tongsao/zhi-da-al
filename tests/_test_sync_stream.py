@@ -1,13 +1,14 @@
 """验证同步 agent.stream(stream_mode='messages') 的结构：能否逐 token 穿透工具内部生成节点。"""
 import sys
+from collections import Counter
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from langchain_core.messages import HumanMessage
 
-from tools.agent_tools import getChatAgent
 from service.chatService import deleteHistoryMessage
+from tools.agent_tools import getChatAgent
 
 CONV = 980004
 deleteHistoryMessage(str(CONV))
@@ -33,7 +34,7 @@ for item in agent.stream(inputs, config=config, stream_mode="messages"):
         cur_chunks.append((node, text, bool(tcs)))
 
 print("\n消息节点分布（node, 是否toolcall, 累积前缀）:")
-from collections import Counter
+
 cnt = Counter()
 merged = {}
 for node, text, is_tc in cur_chunks:

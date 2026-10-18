@@ -2,11 +2,12 @@ import os
 import threading
 
 import torch
-from langchain_chroma import Chroma
 from dotenv import load_dotenv
+from langchain_chroma import Chroma
+from sentence_transformers import CrossEncoder
 
 from agent.rag.initEmBedding import NormalizeDashScopeEmbeddings
-from sentence_transformers import CrossEncoder
+
 load_dotenv()
 
 

@@ -29,7 +29,7 @@
 
 import re
 from pathlib import Path
-from typing import List, Dict, Set
+from typing import Dict, List, Set
 
 # ------------------------------------------------------------------
 # 正则说明（关键参数都写了注释，便于自己改）

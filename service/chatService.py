@@ -1,7 +1,6 @@
 import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import TypedDict
 
 from langchain_community.chat_message_histories import SQLChatMessageHistory
 from langchain_core.output_parsers import StrOutputParser
@@ -11,8 +10,8 @@ from sqlalchemy import delete, func, select
 
 from agent.initChatModel import getModel, getRiskGuard
 from model.initDataBase import db_session
-from model.models import  messageInfo, qaFeedback
-from service.ragFileService import hybridRetrieve, getBm25Retriever  # [rerank]
+from model.models import messageInfo, qaFeedback
+from service.ragFileService import hybridRetrieve  # [rerank]
 
 
 def messagePrint(message):
@@ -231,16 +230,3 @@ def queryFeedbackList(page: int, page_size: int, question: str = "", action: str
                 for r in rows
             ],
         }
-
-class chatGraphState(TypedDict):
-    vectorContent:str
-    bm25Content:str
-
-
-
-# 聊天问答服务
-async def chatDoubleMessages(question: str, conversation_id: int, top_k: int, stream: bool):
-    bm25_retriever = getBm25Retriever()
-    
-
-    pass

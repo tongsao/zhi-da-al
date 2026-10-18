@@ -1,0 +1,18 @@
+# ruff 配置：代码检查 + import 排序
+# 用法: ruff check .  /  ruff check --fix .
+# 规则集刻意保持窄:只查 语法风格(E4/7/9)、未使用引用(F)、import 排序(I)
+# 不启用 BLE001/TRY002/ASYNC230 等——评测与上传路径的异常处理是业务决策，交给 Code Review
+[tool.ruff]
+target-version = "py313"
+line-length = 120
+exclude = [
+    "frontend",
+    "tests/data",
+    ".trae",
+    "node_modules",
+    ".venv",
+    "*.pyc",
+]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]

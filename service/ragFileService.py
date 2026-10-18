@@ -1,5 +1,4 @@
 import hashlib
-import jieba
 import json
 import os
 import pickle
@@ -7,20 +6,19 @@ import threading
 from datetime import datetime
 from pathlib import Path
 
+import jieba
 from dotenv import load_dotenv
 from fastapi import UploadFile
-from langchain_community.document_loaders import TextLoader, PyPDFLoader, JSONLoader
-from langchain_core.documents import Document
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from sqlalchemy import func, select, update, delete
 from fastapi.responses import FileResponse
+from langchain_community.document_loaders import JSONLoader, PyPDFLoader, TextLoader
+from langchain_community.retrievers import BM25Retriever
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_community.retrievers import BM25Retriever
-from langchain_classic.retrievers import EnsembleRetriever  # [rerank] 粗排融合
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from sqlalchemy import delete, func, select, update
 
 from agent.initChatModel import getModel
-from agent.rag.initRag import getVector, getBgeRerankerV2M3  # [rerank]
+from agent.rag.initRag import getBgeRerankerV2M3, getVector  # [rerank]
 from model.initDataBase import db_session
 from model.models import zd_file_info
 from schema.schemas import FileInfo

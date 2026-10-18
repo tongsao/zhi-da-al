@@ -1,10 +1,10 @@
 import os
 from contextlib import contextmanager
-from typing import Generator
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import DeclarativeBase, sessionmaker, Session
 from dotenv import load_dotenv
+from sqlalchemy import create_engine
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
+
 load_dotenv()
 #读取配置
 MYSQL_HOST = os.getenv("MYSQL_HOST")

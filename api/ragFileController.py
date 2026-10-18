@@ -8,12 +8,28 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
 from agent.rag.initRag import getVector
-from model.initDataBase import SessionLocal, db_session
+from model.initDataBase import SessionLocal
 from schema.schemas import Response
-from service.ragFileService import uploadFileAndSaveDir, FileToVector, getDocuments, deleteDocument, downloadDocument, \
-    countDocuments
-from service.evalService import runEvaluation, runRetrievalEval, getEvalRuns, getEvalRun, getEvalDetailPage, \
-    getTestsetSize, startGenerationEval, getGenRuns, getGenRun, startGenerationRerun
+from service.evalService import (
+    getEvalDetailPage,
+    getEvalRun,
+    getEvalRuns,
+    getGenRun,
+    getGenRuns,
+    getTestsetSize,
+    runEvaluation,
+    runRetrievalEval,
+    startGenerationEval,
+    startGenerationRerun,
+)
+from service.ragFileService import (
+    FileToVector,
+    countDocuments,
+    deleteDocument,
+    downloadDocument,
+    getDocuments,
+    uploadFileAndSaveDir,
+)
 
 router = APIRouter(prefix="/api/v1", tags=["rag文件"])   # 统一前缀 + 文档分组
 

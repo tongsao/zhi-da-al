@@ -1,4 +1,5 @@
 import uuid
+from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
 from typing import Annotated, TypedDict
@@ -7,18 +8,14 @@ from langchain_core.documents import Document
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnableWithMessageHistory
-from langchain_core.tools import tool
-from langgraph.constants import START, END
-from langgraph.graph import add_messages, StateGraph
-from pywin.framework.toolmenu import tools
+from langgraph.graph import add_messages
 
 from agent.initChatModel import getEasyMode, getModel, getRiskGuard
 from agent.rag.initRag import getVector
 from model.initDataBase import db_session
 from model.models import messageInfo
-from service.chatService import format_docs, GEN_SYSTEM_PROMPT, get_session_history
-from service.ragFileService import getBm25Retriever, COARSE_K, COARSE_KEEP, rerankChunks
-from collections import defaultdict
+from service.chatService import GEN_SYSTEM_PROMPT, format_docs, get_session_history
+from service.ragFileService import COARSE_K, COARSE_KEEP, getBm25Retriever, rerankChunks
 
 
 # 聊天状态定义（类似于炎黄流程图每一个节点的数据结构）

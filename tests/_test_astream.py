@@ -7,8 +7,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from langchain_core.messages import HumanMessage
 
-from tools.agent_tools import getChatAgent
 from service.chatService import deleteHistoryMessage
+from tools.agent_tools import getChatAgent
 
 
 async def main():

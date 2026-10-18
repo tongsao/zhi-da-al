@@ -19,7 +19,7 @@ import random
 import time
 import uuid
 from dataclasses import dataclass, field
-from typing import AsyncIterator, Awaitable, Callable, Optional
+from typing import AsyncIterator, Callable, Optional
 
 # ---- 类型别名：让函数签名一眼看懂 ----
 # 生成器工厂：传入「已生成的前缀文字」，返回一个新的异步生成器（产出后续文字片段）。

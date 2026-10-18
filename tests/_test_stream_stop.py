@@ -8,8 +8,8 @@ import json
 import sys
 import threading
 import time
-import urllib.request
 import urllib.parse
+import urllib.request
 
 BASE = "http://127.0.0.1:8000"
 SID = str(int(time.time() * 1000))
