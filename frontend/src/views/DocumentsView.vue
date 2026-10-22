@@ -75,6 +75,7 @@
                 <el-icon><Download /></el-icon> 下载
               </el-button>
               <el-popconfirm
+                v-if="auth.isAdmin"
                 :title="`确认删除「${row.FILE_TITLE}」？此操作不可恢复。`"
                 confirm-button-text="删除" cancel-button-text="取消"
                 confirm-button-type="danger" width="260"
@@ -201,6 +202,9 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { listDocuments, uploadDocument, downloadDocument, deleteDocument } from '@/api'
+import { useAuthStore } from '@/stores/auth'
+
+const auth = useAuthStore()
 
 const list = ref([])
 const loading = ref(false)

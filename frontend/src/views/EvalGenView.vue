@@ -18,7 +18,7 @@
         <span class="control-hint">评测集共 {{ testsetSize || '…' }} 条，逐题约 40 秒，本次约需 {{ estimateMinutes }} 分钟</span>
       </div>
       <div class="control-right">
-        <el-button type="primary" size="large" :loading="running" :disabled="running || rerunning" @click="onRun">
+        <el-button v-if="auth.isAdmin" type="primary" size="large" :loading="running" :disabled="running || rerunning" @click="onRun">
           <el-icon v-if="!running"><VideoPlay /></el-icon>
           {{ running ? '评测中...' : '开始评测' }}
         </el-button>
@@ -60,6 +60,7 @@
                 @click="onSelectFailed"
               >选中限流失败（{{ rateFailedRows.length }}）</el-button>
               <el-button
+                v-if="auth.isAdmin"
                 type="primary" plain size="small"
                 :disabled="!selectedRows.length || running || rerunning"
                 @click="onRerun(selectedRows.map(r => r.index))"
@@ -103,7 +104,7 @@
             </el-table-column>
             <el-table-column label="操作" width="80">
               <template #default="{ row }">
-                <el-button link type="primary" :disabled="running || rerunning" @click="onRerun([row.index])">重跑</el-button>
+                <el-button v-if="auth.isAdmin" link type="primary" :disabled="running || rerunning" @click="onRerun([row.index])">重跑</el-button>
               </template>
             </el-table-column>
             <el-table-column type="expand">
@@ -153,6 +154,9 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { ElMessage } from 'element-plus'
 import { VideoPlay } from '@element-plus/icons-vue'
 import { startGenEval, rerunGenEval, listGenRuns, getGenRun, getTestsetSize } from '@/api'
+import { useAuthStore } from '@/stores/auth'
+
+const auth = useAuthStore()
 
 // 三维评分口径与后端裁判 prompt 一致
 const DIMENSIONS = [

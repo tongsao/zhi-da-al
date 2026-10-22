@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy import JSON, Column, DateTime, Float, Integer, String, Text
+from sqlalchemy import JSON, Column, DateTime, Float, Integer, Numeric, String, Text
 
 from model.initDataBase import Base
 
@@ -90,6 +90,49 @@ class qaFeedback(Base):
     question = Column(Text, nullable=False, comment="用户问题")
     answer = Column(Text, nullable=False, comment="模型回答")
     action = Column(String(20), nullable=False, comment="用户操作: copy=复制 / usable=可用 / need_fix=需修改 / unusable=不可用")
+    created_at = Column(DateTime, default=datetime.datetime.now, comment="创建时间")
+
+
+class zd_project_info(Base):
+    __tablename__ = "zd_project_info"
+
+    id = Column(Integer, primary_key=True, autoincrement=True, comment="自增主键")
+    project_id = Column(String(100), unique=True, index=True, comment="项目ID（上游唯一标识）")
+    project_name = Column(String(255), nullable=True, comment="项目名称")
+    year = Column(Integer, nullable=True, comment="年份")
+    month = Column(Integer, nullable=True, comment="月份")
+    quarter_type = Column(Integer, nullable=True, comment="季度类型: 1/2/3/4")
+    amount = Column(Numeric(20, 2), nullable=True, comment="金额（单位:元）")
+    discloser = Column(String(255), nullable=True, comment="披露人")
+    created_at = Column(DateTime, default=datetime.datetime.now, comment="创建时间")
+    updated_at = Column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now, comment="更新时间")
+
+
+class zd_ai_check_result(Base):
+    __tablename__ = "zd_ai_check_result"
+
+    id = Column(Integer, primary_key=True, autoincrement=True, comment="自增主键")
+    project_id = Column(String(100), index=True, comment="项目ID，关联 zd_project_info")
+    file_name = Column(String(255), index=True, comment="文件名")
+    file_path = Column(String(255), nullable=True, comment="文件路径")
+    file_type = Column(String(50), nullable=True, comment="文件类型")
+    status = Column(String(20), default="pending", index=True, comment="校验状态: pending=未质检/in_progress=质检中/success=一致/failed=不一致/error=质检异常")
+    check_detail = Column(JSON, nullable=True, comment="校验明细: 各字段抽取值/业务值/比对结果/原因")
+    recheck_from = Column(Integer, nullable=True, comment="复检来源记录id，普通记录为NULL")
+    error_msg = Column(Text, nullable=True, comment="异常原因")
+    create_date = Column(DateTime, default=datetime.datetime.now, comment="创建时间")
+    update_date = Column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now, comment="更新时间")
+
+
+class zd_ai_check_rule(Base):
+    __tablename__ = "zd_ai_check_rule"
+
+    id = Column(Integer, primary_key=True, autoincrement=True, comment="自增主键")
+    field_name = Column(String(50), unique=True, comment="字段名: disclosure_date/amount/discloser/title")
+    field_label = Column(String(50), comment="字段中文名")
+    compare_type = Column(String(20), comment="比对方式: quarter_match/amount_diff/name_normalized/string_exact")
+    tolerance = Column(Numeric(20, 2), nullable=True, comment="容差(仅金额比对用), 默认0.01")
+    enabled = Column(Integer, default=1, comment="是否启用: 1=启用/0=停用")
     created_at = Column(DateTime, default=datetime.datetime.now, comment="创建时间")
 
 

@@ -18,7 +18,7 @@
         <span class="control-hint">只检索向量库不调大模型，全量 {{ testsetSize || '…' }} 条秒级完成</span>
       </div>
       <div class="control-right">
-        <el-button type="primary" size="large" :loading="running" :disabled="running" @click="onRun">
+        <el-button v-if="auth.isAdmin" type="primary" size="large" :loading="running" :disabled="running" @click="onRun">
           <el-icon v-if="!running"><VideoPlay /></el-icon>
           {{ running ? '评测中...' : '开始评测' }}
         </el-button>
@@ -179,7 +179,9 @@ import { ElMessage } from 'element-plus'
 import { VideoPlay, Aim, Odometer } from '@element-plus/icons-vue'
 import * as echarts from 'echarts'
 import { runEval, listEvalRuns, getEvalRun, getEvalDetail, getTestsetSize } from '@/api'
+import { useAuthStore } from '@/stores/auth'
 
+const auth = useAuthStore()
 const pageTitle = '检索评估'
 const pageDesc = 'Recall@k：top-k 检索块中能找到答案的比例。MRR：首个相关块排名的倒数均值，排名越靠前得分越高。两者均以 rank_any（块命中任一关键词）和 rank_all（块包含全部关键词，更严格）双口径给出。'
 

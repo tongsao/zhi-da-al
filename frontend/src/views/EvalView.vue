@@ -18,7 +18,7 @@
         <span class="control-hint">评测集共 {{ testsetSize || '…' }} 条，全量（含 LLM 问答）约需 1-2 分钟</span>
       </div>
       <div class="control-right">
-        <el-button type="primary" size="large" :loading="running" :disabled="running" @click="onRun">
+        <el-button v-if="auth.isAdmin" type="primary" size="large" :loading="running" :disabled="running" @click="onRun">
           <el-icon v-if="!running"><VideoPlay /></el-icon>
           {{ running ? '评测中...' : '开始评测' }}
         </el-button>
@@ -166,7 +166,10 @@
 import { ref, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { runEval, listEvalRuns, getEvalRun, getTestsetSize } from '@/api'
+import { useAuthStore } from '@/stores/auth'
 import { TrendCharts, Timer, Document, CircleCheck, VideoPlay } from '@element-plus/icons-vue'
+
+const auth = useAuthStore()
 
 const limit = ref(30)
 const topK = ref(6)

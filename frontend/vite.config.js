@@ -18,7 +18,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       // 开发代理：前端 localhost:5173 调用 /api 转发到 FastAPI 8000
-      '/api': {
+      '/api/': {
         target: 'http://localhost:8000',
         changeOrigin: true
       }

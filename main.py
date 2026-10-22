@@ -3,21 +3,43 @@ import uvicorn
 from fastapi import FastAPI
 from langfuse import Langfuse
 
-from api import chatController, ragFileController
+from api import aiCheckController, chatController, ragFileController
+from gateway import config as gateway_config
+from gateway import initGateway
+from gateway.middleware import AuditMiddleware, AuthMiddleware, RateLimitMiddleware
 from model.initDataBase import Base, engine
+from service.aiCheckService import initRules
 from service.evalService import failStaleGenRuns
 
 app = FastAPI(
     title="企业智达服务助手",
     version="1.0",
-    description="企业智达服务助手 API"
+    description="企业智达服务助手 API",
+    # 网关收敛接口面：关闭 /docs /redoc /openapi.json（评审 P1-2）
+    docs_url=None,
+    redoc_url=None,
+    openapi_url=None,
 )
 app.include_router(ragFileController.router)
 app.include_router(chatController.router)
+app.include_router(aiCheckController.router)
+
+# 网关横切中间件（洋葱模型：Audit 最外层 → Auth → RateLimit → app）
+# Audit 放最外层才能兜住 Auth/RateLimit 短路的 401/403/429 拒绝响应
+app.add_middleware(RateLimitMiddleware)
+app.add_middleware(AuthMiddleware)
+app.add_middleware(AuditMiddleware)
+
+# JWT 签名密钥必须配齐，否则拒绝启动（禁止裸奔）
+gateway_config.validate()
 
 # 自动建缺失的表（checkfirst 只建新表，不碰旧表）；DB 不可用时降级为告警，不阻断启动
 try:
     Base.metadata.create_all(engine)
+    gateway_router = initGateway()  # 幂等：补建网关 4 表 + admin 账号，并返回网关管理路由
+    app.include_router(gateway_router)
+    # 预置 AI 质检校验规则（幂等，不覆盖已有配置）
+    initRules()
     # 生成评估跑在后台线程里，进程重启会把它丢掉，残留的 running 记录需标失败，否则一直挡着新评测
     stale = failStaleGenRuns()
     if stale:
@@ -43,8 +65,6 @@ async def startup():
 
 if __name__ == '__main__':
     import asyncio
-
-    import uvicorn
 
     config = uvicorn.Config(app, host="127.0.0.1", port=8000)
     server = uvicorn.Server(config)

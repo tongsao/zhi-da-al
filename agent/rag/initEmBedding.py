@@ -1,11 +1,12 @@
 from typing import List
 
 import numpy as np
-from langchain_community.embeddings import DashScopeEmbeddings
+
+from llm_gateway.gate import CountingEmbeddingModel
 
 
-# 向量模型归一化
-class NormalizeDashScopeEmbeddings(DashScopeEmbeddings):
+# 向量模型归一化（继承计数包装：embed 调用自动走限额预检与用量记录，initRag 实例化处零改动）
+class NormalizeDashScopeEmbeddings(CountingEmbeddingModel):
     def _12_normalize(self,vecs):
         v = np.asarray(vecs,dtype=np.float32)
         norms = np.linalg.norm(v,axis=1,keepdims=True)
