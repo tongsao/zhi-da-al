@@ -18,9 +18,11 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from sqlalchemy import delete, func, select, update
 
 from agent.initChatModel import getModel
-from agent.rag.initRag import getBgeRerankerV2M3, getVector  # [rerank]
+from agent.rag.initRag import deleteVectorsByFileId, getBgeRerankerV2M3, getVector  # [rerank]
 from model.initDataBase import db_session
 from model.models import zd_file_info
+from observability import trace_config
+from prompts import get_prompt, get_prompt_version
 from schema.schemas import FileInfo
 
 load_dotenv()
@@ -149,8 +151,6 @@ def hybridRetrieve(question: str, top_k: int) -> list:
 # 改写只依赖问题文本与历史，结果落盘复用：一次改写是 9s 的模型调用，
 # 而评测每轮都要对同一批 45 道题重跑，缓存让重复轮次直接省掉这部分
 REWRITE_CACHE_PATH = Path("resource/rewrite_cache.json")
-# 改动下面的改写 prompt 必须 +1：否则旧缓存里的改写结果与新 prompt 口径不符
-REWRITE_CACHE_VERSION = 1
 _rewriteCache = None
 _rewriteLock = threading.RLock()
 
@@ -175,23 +175,13 @@ def cacheRewrite(key: str, rewritten: str):
 
 def llm_rewrite(query: str, history: str = "") -> str:
     """把口语化问题改写成书面检索查询。改写为空（模型异常输出）时回退原问题。"""
-    # 模型名必须进键：换模型后改写口径就变了，命中旧模型留下的改写会悄悄改掉检索输入
-    key = f"v{REWRITE_CACHE_VERSION}|{getModel().model_name}|{history}|{query}"
+    # 缓存键含改写 prompt 版本与模型名：换版本/换模型后自动失效，不必手工清缓存
+    key = f"rewrite:{get_prompt_version('rewrite')}|{getModel().model_name}|{history}|{query}"
     cached = loadRewriteCache().get(key)
     if cached:
         return cached
 
-    system_prompt = (
-        "你是证券法规知识库的查询优化助手。将用户问题改写成适合检索的书面查询。\n"
-        "规则：\n"
-        "1) 保留精确法条号、主体（董事/监事/股东/高管）、动作（召集/表决/披露/担保）；\n"
-        "2) 保留问题原有的行业、机构和范围限定（如证券公司、本公司），不得扩展成公司法、证券法"
-        "等通用法律语境，也不得替换或新增主体；\n"
-        "3) 补充多轮对话中缺失的主体和指代；\n"
-        "4) 去除口语、闲聊、重复词；\n"
-        "5) 不得引入原问题之外的概念、制度名称或条文号；\n"
-        "6) 只输出一行改写后的查询，不解释不回答。"
-    )
+    system_prompt = get_prompt("rewrite")
     if history:
         user_msg = f"历史对话：{history}\n原始问题：{query}\n改写后："
     else:
@@ -204,7 +194,10 @@ def llm_rewrite(query: str, history: str = "") -> str:
     # temperature=0 让改写结果稳定；模型实例默认 0.5，用 bind 覆盖本次调用
     chain = prompt | getModel().bind(temperature=0) | StrOutputParser()
 
-    rewritten = chain.invoke({"user_msg": user_msg}).strip() or query
+    rewritten = chain.invoke(
+        {"user_msg": user_msg},
+        config=trace_config(tags=["rewrite"], trace_name="rewrite"),
+    ).strip() or query
     cacheRewrite(key, rewritten)
     return rewritten
 
@@ -301,7 +294,7 @@ async def FileToVector(chunk_size:int,chunk_overlap:int,file_id:str,filePath :st
     else:
         raise Exception(f"不支持的文件类型：{ext}")
 
-    # 给文档打标签，Chroma 只存 Document 对象，元数据必须是 str/int/float/bool
+    # 给文档打标签，pgvector 的元数据落 JSONB，只放 str/int/float/bool
     # md 块也要带 fileid，否则 deleteDocument 按 fileid 删不掉向量
     for i, chunk in enumerate(documents):
         chunk.metadata.update({
@@ -357,11 +350,8 @@ def deleteDocument(document_id: str):
         # 删除数据库记录
         db.execute(delete(zd_file_info).where(zd_file_info.ID == document_id))
         db.commit()
-        # 需要删除向量库文档
-        vector = getVector()
-        vector.delete(
-            where={"fileid": document_id}
-        )
+        # 需要删除向量库文档（按 fileid 元数据定位后按 id 删除）
+        deleteVectorsByFileId(document_id)
         # BM25 索引同步：清掉该文件的所有块并重建
         saveBm25Docs([d for d in loadBm25Docs() if d.metadata.get("fileid") != document_id])
 

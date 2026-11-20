@@ -64,15 +64,20 @@ class CountingChatModel(Runnable):
     继承 Runnable 以便 langchain 的 coerce_to_runnable/`|` 链识别本包装为可运行对象。
     """
 
-    def __init__(self, inner: Any, role: str):
+    def __init__(self, inner: Any, role: str, bind_factory=None):
         self.inner = inner
         self.role = role
+        # 绑定工具需要回到原始 ChatModel 再重新装配重试/降级，
+        # 直接对 RunnableRetry 外壳调 bind_tools 会报 AttributeError
+        self._bind_factory = bind_factory
 
     # ---- 接口变形：重新包装，保住计数外壳 ----
     def bind(self, **kwargs):
         return CountingChatModel(self.inner.bind(**kwargs), self.role)
 
     def bind_tools(self, tools, **kwargs):
+        if self._bind_factory is not None:
+            return CountingChatModel(self._bind_factory(tools, kwargs), self.role, self._bind_factory)
         return CountingChatModel(self.inner.bind_tools(tools, **kwargs), self.role)
 
     def with_config(self, **kwargs):

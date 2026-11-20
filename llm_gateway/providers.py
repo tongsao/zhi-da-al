@@ -7,14 +7,28 @@ from langfuse.langchain import CallbackHandler
 
 from gateway import config
 from llm_gateway.gate import CountingChatModel, CountingEmbeddingModel
+from model_versions import CHAT_MODEL, EMBEDDING_MODEL, REWRITE_MODEL
 
 logger = logging.getLogger("llm_gateway.providers")
 
 langfuse_handler = CallbackHandler()
 
 
-def _build_chat(model_name: str, temperature: float):
-    inner = init_chat_model(
+def _assemble_chat(raw, use_fallback: bool):
+    """在原始 ChatModel 上装配回调与重试；工具绑定后也要走同一套装配。"""
+    inner = raw.with_config({"callbacks": [langfuse_handler]})
+    # 仅重试瞬时错误，业务 4xx 不重试；指数退避由 LangChain 内部处理
+    inner = inner.with_retry(
+        stop_after_attempt=3,
+        retry_if_exception_type=(TimeoutError, OSError),
+    )
+    if use_fallback:
+        inner = inner.with_fallbacks([_rewrite_inner()])
+    return inner
+
+
+def _build_chat(model_name: str, temperature: float, role: str, use_fallback: bool = False):
+    raw = init_chat_model(
         model=f"openai:{model_name}",
         api_key=config.DEEPSEEK_API_KEY,
         base_url=config.DEEPSEEK_BASE_URL,
@@ -22,13 +36,12 @@ def _build_chat(model_name: str, temperature: float):
         # 单次模型调用 30s 封顶：超时由 with_retry 兜底，避免上游挂死把整条链路拖住
         timeout=30,
     )
-    inner = inner.with_config({"callbacks": [langfuse_handler]})
-    # 仅重试瞬时错误，业务 4xx 不重试；指数退避由 LangChain 内部处理
-    inner = inner.with_retry(
-        stop_after_attempt=3,
-        retry_if_exception_type=(TimeoutError, OSError),
+    # bind_tools 必须回到 raw 上绑定后再重新装配：RunnableRetry 外壳没有 bind_tools
+    return CountingChatModel(
+        _assemble_chat(raw, use_fallback),
+        role,
+        bind_factory=lambda tools, kwargs: _assemble_chat(raw.bind_tools(tools, **kwargs), use_fallback),
     )
-    return inner
 
 
 # ---- 单例（懒加载，首次 get 时才构建） ----
@@ -41,10 +54,9 @@ def get_chat() -> CountingChatModel:
     """主生成模型 deepseek-v4.1-flash-1017（temp=0.5），返回计数代理包装实例。"""
     global _chat
     if _chat is None:
-        inner = _build_chat("deepseek-v4.1-flash-1017", 0.5)
-        if config.GATEWAY_MODEL_FALLBACK:
-            inner = inner.with_fallbacks([_rewrite_inner()])
-        _chat = CountingChatModel(inner, "chat")
+        _chat = _build_chat(
+            CHAT_MODEL, 0.5, "chat", config.GATEWAY_MODEL_FALLBACK
+        )
     return _chat
 
 
@@ -52,12 +64,13 @@ def get_rewrite() -> CountingChatModel:
     """轻量/改写模型 deepseek-v4.1-flash-1017（temp=0.3），返回计数代理包装实例。"""
     global _rewrite
     if _rewrite is None:
-        _rewrite = CountingChatModel(_rewrite_inner(), "rewrite")
+        _rewrite = _build_chat(REWRITE_MODEL, 0.3, "rewrite")
     return _rewrite
 
 
 def _rewrite_inner():
-    return _build_chat("deepseek-v4.1-flash-1017", 0.3)
+    """降级用的改写模型实例；不级联 fallback，避免递归装配。"""
+    return _build_chat(REWRITE_MODEL, 0.3, "rewrite")
 
 
 def get_embedding() -> CountingEmbeddingModel:
@@ -65,7 +78,7 @@ def get_embedding() -> CountingEmbeddingModel:
     global _embedding
     if _embedding is None:
         _embedding = CountingEmbeddingModel(
-            model="text-embedding-v1",
+            model=EMBEDDING_MODEL,
             dashscope_api_key=config.QWEN_API_KEY,
         )
     return _embedding

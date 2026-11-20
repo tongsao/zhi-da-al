@@ -1,4 +1,4 @@
-# RAG 检索质量评测：绕过 /qa/chat 问答接口，直接连 Chroma 向量库做检索，算 Recall@k 和 MRR
+# RAG 检索质量评测：绕过 /qa/chat 问答接口，直接连 PostgreSQL(pgvector) 向量库做检索，算 Recall@k 和 MRR
 # 用法: E:\conda\envs\langchain1.2\python.exe tests/run_retrieval_eval.py [--top-k 6] [--limit N]
 #
 # 两个指标是什么意思（写给第一次接触的同学）：
@@ -19,7 +19,7 @@ from pathlib import Path
 # 把项目根目录加进搜索路径，这样单独运行本文件也能 import 到 agent 包
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# 复用项目里现成的向量库连接，和 service/chatService.py 用的是同一个 Chroma
+# 复用项目里现成的向量库连接，和 service/chatService.py 用的是同一个 PGVector 集合
 from agent.rag.initRag import getVector
 
 

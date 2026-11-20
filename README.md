@@ -50,7 +50,7 @@
 |---|---|
 | 后端框架 | Python 3.13 · FastAPI · uvicorn |
 | LLM 编排 | LangChain 1.x · LangGraph 1.x（create_agent + StateGraph） |
-| 存储 | MySQL 8（业务元数据）· ChromaDB（向量）· SQLite（checkpoint/会话记忆） |
+| 存储 | PostgreSQL 17 + pgvector（业务元数据与向量）· SQLite（checkpoint/会话记忆） |
 | 检索/模型 | rank-bm25 + jieba · DashScope text-embedding-v1 · bge-reranker-v2-m3（本地 CrossEncoder） |
 | 生成模型 | glm-5.3（主）· glm-5.3-flash（改写/轻任务），走 GOAI OpenAI 兼容端点 |
 | 可观测 | Langfuse（CallbackHandler） |
@@ -60,8 +60,8 @@
 
 ### 1. 环境准备
 
-- Python 3.13 + 依赖（LangChain 1.x、LangGraph、FastAPI、SQLAlchemy 2、chromadb、langchain-chroma、rank-bm25、jieba、sentence-transformers 等）
-- MySQL 8（需先建库）
+- Python 3.13 + 依赖（LangChain 1.x、LangGraph、FastAPI、SQLAlchemy 2、psycopg、langchain-postgres、rank-bm25、jieba、sentence-transformers 等）
+- PostgreSQL 17 + pgvector 扩展（需先建库并 `CREATE EXTENSION vector`）
 - 本地 bge-reranker-v2-m3 模型目录（路径见 `agent/rag/initRag.py`）
 
 ### 2. 配置 `.env`
@@ -74,12 +74,12 @@ GOAI_API_KEY=...
 GOAI_BASE_URL=...
 # 向量模型
 QWEN_API_KEY=...
-# MySQL
-MYSQL_HOST=127.0.0.1
-MYSQL_PORT=3306
-MYSQL_USER=...
-MYSQL_PASSWORD=...
-MYSQL_DB=...
+# PostgreSQL（业务表 + 向量）
+PG_HOST=127.0.0.1
+PG_PORT=5432
+PG_USER=...
+PG_PASSWORD=...
+PG_DB=zhida
 # 可选：Langfuse 埋点
 LANGFUSE_PUBLIC_KEY=...
 LANGFUSE_SECRET_KEY=...

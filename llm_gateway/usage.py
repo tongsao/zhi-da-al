@@ -110,8 +110,10 @@ def _write_usage(payload):
                     text(
                         "INSERT INTO zd_model_usage (stat_date, model_kind, input_tokens, output_tokens, total_tokens) "
                         "VALUES (:d, :k, :i, :o, :t) "
-                        "ON DUPLICATE KEY UPDATE input_tokens = input_tokens + :i, "
-                        "output_tokens = output_tokens + :o, total_tokens = total_tokens + :t"
+                        "ON CONFLICT (stat_date, model_kind) DO UPDATE SET "
+                        "input_tokens = zd_model_usage.input_tokens + EXCLUDED.input_tokens, "
+                        "output_tokens = zd_model_usage.output_tokens + EXCLUDED.output_tokens, "
+                        "total_tokens = zd_model_usage.total_tokens + EXCLUDED.total_tokens"
                     ),
                     {"d": payload["stat_date"], "k": kind, "i": inp, "o": out, "t": inp + out},
                 )
@@ -134,17 +136,21 @@ def _submit_worker(fn, payload):
 
 # ---- 统计页查询（直接读库，不走内存快照） ----
 def query_daily(kind: str | None = None, days: int = 30):
-    from model.initDataBase import db_session  # 延迟导入
     from sqlalchemy import text
 
-    cond = "WHERE (:kind IS NULL OR model_kind = :kind)"
+    from model.initDataBase import db_session  # 延迟导入
+
+    where = "WHERE stat_date >= CURRENT_DATE - make_interval(days => :days)"
+    params = {"days": days}
+    if kind:
+        where += " AND model_kind = :kind"
+        params["kind"] = kind
     with db_session() as db:
         rows = db.execute(
             text(
                 f"SELECT stat_date, model_kind, input_tokens, output_tokens, total_tokens "
-                f"FROM zd_model_usage {cond} "
-                f"AND stat_date >= DATE_SUB(CURDATE(), INTERVAL :days DAY) ORDER BY stat_date DESC, model_kind"
+                f"FROM zd_model_usage {where} ORDER BY stat_date DESC, model_kind"
             ),
-            {"kind": kind, "days": days},
+            params,
         ).all()
     return [dict(r._mapping) for r in rows]

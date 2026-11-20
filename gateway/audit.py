@@ -71,7 +71,7 @@ def cleanup_expired(retention_days: int = 90):
     try:
         with db_session() as db:
             n = db.execute(
-                text("DELETE FROM zd_call_audit WHERE created_at < NOW() - INTERVAL :days DAY"),
+                text("DELETE FROM zd_call_audit WHERE created_at < NOW() - make_interval(days => :days)"),
                 {"days": retention_days},
             ).rowcount
             db.commit()

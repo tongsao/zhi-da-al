@@ -9,6 +9,7 @@ from fastapi.responses import StreamingResponse
 from langchain_core.messages import HumanMessage
 
 from agent.handle.llm_stream_handle import CancelToken, StreamHandle
+from observability import trace_config
 from schema.schemas import QaFeedback, Response
 from service.chatService import (
     deleteHistoryMessage,
@@ -18,7 +19,7 @@ from service.chatService import (
     queryHistoryMessage,
     saveQaFeedback,
 )
-from tools.agent_tools import TOOL_HINTS, getChatAgent
+from tools.agent_tools import TOOL_HINTS, TOOL_VERSION, TOOLSET_HASH, getChatAgent
 
 router = APIRouter(prefix="/api/v1/qa", tags=["聊天问答"])
 
@@ -36,6 +37,22 @@ stream_processor = StreamHandle(total_budget=120.0, idle_budget=30.0)
 def _sse(event: str, data: dict) -> str:
     """把一条事件编码成标准 SSE 块（带 event 名）。"""
     return f"event: {event}\ndata: {json.dumps(data, ensure_ascii=False)}\n\n"
+
+
+def _agent_config(conversation_id: int) -> dict:
+    """Agent 运行配置：会话隔离 + 递归上限 + Langfuse 审计元数据。
+
+    recursion_limit=30：一次模型调用占 5 步（before_model/model/两个工具中间件/after_model），
+    正常一轮问答约 11 步；30 可覆盖模型调用上限 4 次 + 多次工具调用的最坏情况。
+    """
+    return trace_config(
+        {"configurable": {"thread_id": str(conversation_id)}, "recursion_limit": 30},
+        tags=["chat"],
+        trace_name="chat",
+        session_id=str(conversation_id),
+        tool_version=TOOL_VERSION,
+        tool_hash=TOOLSET_HASH,
+    )
 
 
 def _to_stream_event(mode: str, chunk):
@@ -105,11 +122,8 @@ async def _agent_event_stream(question: str, conversation_id: int, top_k: int) -
         "conversation_id": conversation_id,
         "top_k": top_k,
     }
-    # 会话级隔离：LangGraph 按 thread_id 区分不同会话的记忆，必须传，
-    # 否则所有用户共享同一个会话状态，会互相串线。
-    # recursion_limit=10：正常一轮 3~5 步（模型→工具→模型）；即使模型调用打满 4 次，
-    # 上限也只需约 7 步，10 是最后一道硬保险。
-    agent_config = {"configurable": {"thread_id": str(conversation_id)}, "recursion_limit": 10}
+    # 会话隔离 / 递归上限 / Trace 元数据统一由 _agent_config 装配
+    agent_config = _agent_config(conversation_id)
 
     # ---- 后台线程与主协程之间的「信箱」 ----
     event_queue = queue.Queue()    # 线程安全队列：后台线程往里放，主协程从里取
@@ -248,9 +262,8 @@ async def chat(request: Request, question: str, conversation_id: int, top_k: int
                 "conversation_id": conversation_id,
                 "top_k": top_k,
             },
-            # 会话级隔离：SqliteSaver 按 thread_id 分线程，不传则全站共用一个线程会串线
-            # recursion_limit 与流式链路保持一致，防止 agent 循环调用工具停不下来
-            config={"configurable": {"thread_id": str(conversation_id)}, "recursion_limit": 10},
+            # 会话级隔离 / 递归上限 / Langfuse 审计元数据见 _agent_config
+            config=_agent_config(conversation_id),
         )
         answer = result["messages"][-1].content
         # 前端按原链路返回结构消费：{ conversation_id, role, content }

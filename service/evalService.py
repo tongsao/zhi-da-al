@@ -13,6 +13,8 @@ from sqlalchemy import func, select, update
 from agent.initChatModel import getModel
 from model.initDataBase import db_session
 from model.models import evalGenRun, evalRun
+from observability import trace_config
+from prompts import get_prompt
 from service.chatService import deleteHistoryMessage, format_docs, generateAnswer
 from service.ragFileService import hybridRetrieve
 
@@ -239,38 +241,8 @@ async def runEvaluation(limit: int, top_k: int):
 
 # ===== 生成评估：逐题走生产链路问答 + 三维裁判打分 =====
 
-# 裁判口径与 tests/run_eval_data.py 第10轮基线逐字一致，两处必须同步改，否则分数不可比
-JUDGE_PROMPT = ChatPromptTemplate.from_template("""你是证券合规领域的评审专家，请评估【系统生成答案】的质量。
-
-【问题】{question}
-【检索到的资料】（判定 faithfulness 的唯一依据）
-{context}
-【标准答案】（判定 correctness / completeness 的依据，仅列核心要点）
-{golden}
-【系统生成答案】
-{generated}
-【引用一致性检查】（并入 faithfulness）
-检查生成答案中出现的资料名称、条号格式是否与【检索到的资料】一致：
-- 出现资料中不存在的规范/制度名称 → faithfulness 判 0
-- 条号被加书名号（如《第五十三条》）→ faithfulness 最多 1 分
-- 引用了未检索到的条号 → faithfulness 最多 1 分
-
-【评分规则】
-1. faithfulness：生成答案中的每个事实，能否在【检索到的资料】中找到依据？
-   2=全部有依据｜1=轻微推断但未脱离资料｜0=存在资料中完全没有的内容
-   ⚠️ golden 只列核心要点，不代表资料全集。生成答案包含 golden 未列出、
-      但资料中确实存在的内容，属于【完整】而非【不忠实】，不得扣分。
-
-2. correctness：与【标准答案】相比，事实是否正确？
-   重点检查数字、期限、比例、量词。
-   ⚠️ 不得因"答案比 golden 更详细"扣分。
-
-3. completeness：【问题所问范围】内的要点是否齐全？
-   2=要点+配套限定条件齐全｜1=答对主干但遗漏限定条件｜0=遗漏核心要点
-   ⚠️ 判定"遗漏"前必须在生成答案中逐字查找该要点，确认不存在才可扣分。
-
-输出 JSON：{{"correctness":<0-2>,"completeness":<0-2>,"faithfulness":<0-2>,"reason":"<一句话>"}}
-""")
+# 裁判口径集中在 prompts.py（judge），与 tests/run_eval_data.py 的历史基线保持同步
+JUDGE_PROMPT = ChatPromptTemplate.from_template(get_prompt("judge"))
 
 # 裁判任务简单，固定关思考：判分更稳定，也省掉每题数十秒的思考开销
 judge_chain = JUDGE_PROMPT | getModel().bind(temperature=0, extra_body={"thinking": {"type": "disabled"}}) | StrOutputParser()
@@ -384,7 +356,7 @@ def evalGenerationOne(index: int, question: str, golden: str, top_k: int) -> tup
             "golden": golden,
             "generated": generated,
             "context": format_docs(chunks),  # 键名与 JUDGE_PROMPT 里的 {context} 对齐
-        }))
+        }, config=trace_config(tags=["eval", "judge"], trace_name="eval-judge")))
         return generated, json.loads(raw.strip().removeprefix("```json").removesuffix("```").strip())
     finally:
         deleteHistoryMessage(str(conv_id))

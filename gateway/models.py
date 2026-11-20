@@ -3,8 +3,7 @@
 # 否则 main.py 的 `from gateway import initGateway` 顶层 import 会连带建连失败。
 import datetime
 
-from sqlalchemy import JSON, Column, Date, DateTime, Integer, String
-from sqlalchemy.dialects.mysql import DATETIME as MySQLDateTime
+from sqlalchemy import JSON, Column, Date, DateTime, Index, Integer, String, UniqueConstraint
 
 from model.initDataBase import Base
 
@@ -21,8 +20,8 @@ class ZdUser(Base):
     is_active = Column(Integer, default=1, comment="停用即时失效")
     failed_attempts = Column(Integer, default=0, comment="连续输错计数")
     locked_until = Column(DateTime, nullable=True, comment="锁定截止时间")
-    # 微秒精度：改密常发生在登录后同一秒内，秒级 DATETIME 会截断导致旧 token 漏判
-    pwd_changed_at = Column(MySQLDateTime(fsp=6), nullable=False, comment="密码变更时间")
+    # 微秒精度：改密常发生在登录后同一秒内，秒级时间戳会截断导致旧 token 漏判
+    pwd_changed_at = Column(DateTime, nullable=False, comment="密码变更时间")
     created_at = Column(DateTime, default=datetime.datetime.now)
     updated_at = Column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
 
@@ -43,6 +42,11 @@ class ZdApiKey(Base):
 
 class ZdCallAudit(Base):
     __tablename__ = "zd_call_audit"
+    # 与 MySQL 存量索引对齐：按调用方、按状态查询
+    __table_args__ = (
+        Index("idx_zd_call_audit_caller", "caller_type", "caller_id"),
+        Index("idx_zd_call_audit_status", "status"),
+    )
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     caller_type = Column(String(20), default="anonymous", comment="user/key/anonymous")
@@ -58,6 +62,10 @@ class ZdCallAudit(Base):
 
 class ZdModelUsage(Base):
     __tablename__ = "zd_model_usage"
+    # 用量按 (自然日, 模型角色) 合并累计，upsert 依赖这个唯一约束
+    __table_args__ = (
+        UniqueConstraint("stat_date", "model_kind", name="uk_zd_model_usage_date_kind"),
+    )
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     stat_date = Column(Date, nullable=False, comment="自然日")

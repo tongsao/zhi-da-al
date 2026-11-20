@@ -1,3 +1,5 @@
+import hashlib
+import json
 from operator import add
 
 from langchain.agents import create_agent
@@ -13,6 +15,7 @@ from typing_extensions import Annotated, TypedDict
 from agent.initChatModel import checkpointer, getModel
 from model.initDataBase import db_session
 from model.models import evalGenRun, evalRun
+from prompts import get_prompt
 from service.chatGraphService import (
     chatMessageNode,
     messageGraphState,
@@ -21,6 +24,7 @@ from service.chatGraphService import (
     reRankNode,
 )
 from service.chatService import get_session_history
+from tools.toolRecovery import ToolErrorRecoveryMiddleware
 
 
 # Agent 状态的扩展字段：graphAnswer 需要但不应让模型自己猜的请求级参数
@@ -190,6 +194,23 @@ def queryLlmAsJudgeResult():
 
 AGENT_TOOLS = [graphAnswer, queryReCalAndMrr, queryLlmAsJudgeResult]
 
+# 工具集版本：语义版本手动维护，内容哈希自动反映工具名/描述/参数的真实变化，
+# 两者一起写入 Langfuse Trace，审计时能判断“工具变没变、有没有忘记升版本”
+TOOL_VERSION = "v1"
+
+
+def _toolset_hash(tools) -> str:
+    payload = [
+        {"name": tool.name, "description": tool.description, "args": tool.args}
+        for tool in tools
+    ]
+    return hashlib.sha256(
+        json.dumps(payload, ensure_ascii=False, sort_keys=True).encode("utf-8")
+    ).hexdigest()[:12]
+
+
+TOOLSET_HASH = _toolset_hash(AGENT_TOOLS)
+
 # 工具名 → 前端提示文案：与工具定义同文件维护，新增工具时不会漏改。
 # 接口层只 import 使用，不再硬编码工具名单。
 TOOL_HINTS = {
@@ -208,14 +229,7 @@ def getChatAgent():
             getModel(),
             AGENT_TOOLS,
             state_schema=ChatAgentState,
-            system_prompt=(
-                "你是企业知识库的智能问答助手「智答」，服务于证券合规与内控制度查询。\n"
-                "工具使用策略：\n"
-                "1. 用户问知识库内容（制度、流程、职责、时限、比例等）时，调用 graphAnswer 检索并回答；\n"
-                "2. 用户问检索/生成评估指标（Recall、MRR、事实正确性、要点完整性、忠于资料等）时，调用对应评估工具；\n"
-                "3. 闲聊、翻译、通用知识等问题不要调用工具，直接如实告知无法回答；\n"
-                "4. 回答必须忠于知识库资料，不得编造，资料中没有就明说。"
-            ),
+            system_prompt=get_prompt("agent"),
             checkpointer=checkpointer,
             # 防死循环（按实际链路校准）：
             # ■ 模型调用：正常一轮是「决策→作答」2 次，多意图顶多 3 次，4 次只给参数纠错留一次余量；
@@ -225,6 +239,8 @@ def getChatAgent():
             #   重复调用每次至少十几秒，很容易吃满 chatController 的 120s 流式总预算。
             # 不设 thread_limit：会话状态跨轮持久化（SqliteSaver），按线程累计会误伤长会话。
             middleware=[
+                # 最外层兜住工具异常：模型修参重试 2 次，仍失败则返回失败 ToolMessage 让模型告知用户
+                ToolErrorRecoveryMiddleware(),
                 ModelCallLimitMiddleware(run_limit=4, exit_behavior="end"),
                 ToolCallLimitMiddleware(run_limit=3, exit_behavior="continue"),
                 ToolCallLimitMiddleware(tool_name="graphAnswer", run_limit=1, exit_behavior="continue"),

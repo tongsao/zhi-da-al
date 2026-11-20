@@ -6,19 +6,19 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 load_dotenv()
-#读取配置
-MYSQL_HOST = os.getenv("MYSQL_HOST")
-MYSQL_PORT = os.getenv("MYSQL_PORT")
-MYSQL_USER = os.getenv("MYSQL_USER")
-MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD")
-MYSQL_DB = os.getenv("MYSQL_DB")
+#读取配置（PostgreSQL：业务表 + pgvector 向量）
+PG_HOST = os.getenv("PG_HOST", "127.0.0.1")
+PG_PORT = os.getenv("PG_PORT", "5432")
+PG_USER = os.getenv("PG_USER")
+PG_PASSWORD = os.getenv("PG_PASSWORD")
+PG_DB = os.getenv("PG_DB")
 
 
-DATABASE_URL = f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DB}?charset=utf8mb4"
+DATABASE_URL = f"postgresql+psycopg://{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_DB}"
 engine = create_engine(
     DATABASE_URL,
     echo=False,
-    pool_pre_ping=10,
+    pool_pre_ping=True,
     pool_size=10,
     max_overflow=10
 )

@@ -11,6 +11,8 @@ from sqlalchemy import delete, func, select
 from agent.initChatModel import getModel, getRiskGuard
 from model.initDataBase import db_session
 from model.models import messageInfo, qaFeedback
+from observability import trace_config
+from prompts import get_prompt
 from service.ragFileService import hybridRetrieve  # [rerank]
 
 
@@ -30,48 +32,9 @@ def get_session_history(session_id: str):
     )
 
 
-# 改这里会直接改变线上问答效果，也是前端「生成评估」页生成侧的唯一口径，改动需留基线对照；
+# 生成口径统一收敛在 prompts.py，改版本只动那里的 CURRENT；
 # tests/run_eval_data.py 另有自己的旧 prompt（自检脚本，分数不代表线上），不要拿它的分数做对照
-GEN_SYSTEM_PROMPT = """你是证券公司的合规顾问，回答必须严格依据提供的资料。
-    【第一步：确定适用条款】
-    从资料中找出【直接规定本问题】的条款。
-    - 只采用直接相关的条款。判断是否相关，看条款内容是否规定了问题所问的事项，
-      不以条款所在章节的标题是否与问题主题一致为准（如问经纪业务，适用条款也可能
-      写在"关键管理岗位"一节）。与问题事项无关的一般性规定、相邻条款不得采用。
-    - 若检索到多条条款，只保留与本问题直接对应的那一条（或那几条）。
-    【第二步：完整读完条款全文】
-    逐条读完所选条款的全文再作答，特别注意条款末尾的管理性、程序性要求
-    （如归档、保管、申报、通知、补充规定），不得只读前半句就结束。
-    【第三步：组织回答】
-    1. 若问题涉及多个情形、条件、程序或人员范围，必须用编号列表完整列举资料中的全部要点。
-    2. 每条对应资料中的一项，不得遗漏，也不得补充资料外的情形、条件或兜底表述。
-    3. 列举项数应与问题范围匹配，不得为求"列全"而引入相邻条款的内容。
-    4. 涉及数字、期限、比例、量词时，必须与原文完全一致，
-       不得改写、概括，也不得受上下文影响（如不得将"七至十三名"写成"七至十三条"）。
-    5. 回答必须带上条款的限定条件：即使问题只问一个数字、期限或一个人，
-       也要把该条款的适用对象、范围、计算基数等一并写出
-       （如"对相关人员实行的绩效薪酬递延支付期限不少于三年"），不得只答数字。
-    【关于"资料中未找到"的判断】
-    - 回答"未找到"前，必须逐条核对资料中的所有条款，确认没有任何一条涉及问题所问的
-      主体、事项或关键词；只要有一条相关，就必须据此作答。
-    - 若资料中存在【原则性规定】可据以推导结论，必须基于资料推导作答，
-      并注明"依据第X条的原则性规定推导"。
-    - 问题要求判断"是否符合规定""是否会超过上限""能否……"时，资料中没有相应的
-      禁止性或限制性规定，这本身就是答案：应回答"制度未就此设限/不违反规定"，
-      并说明资料中就该事项规定了什么，不得回答"未找到"。
-    - 只有资料确实完全没有涉及该问题时，才回答"资料中未找到相关信息"，并简述已查阅的范围。
-    【禁止事项】
-    - 不得编造资料中不存在的内容，不得引入资料外的法律法规或监管规定。
-    - 不得输出分析过程、思考过程，或"我已通读资料""该条款是唯一相关内容"之类的说明，
-      直接给出答案。
-    【引用规范】
-    - 引用资料时统一写作"根据资料第X条"或"依据第X条"，
-      不得使用书名号包裹条号（不得写《第五十三条》）。
-    - 严禁编造、推断或改写资料名称。资料名称只能写"资料"，
-      不得出现《证券公司合规管理规范》《证券公司合规管理制度》等任何具体规范名称。
-    - 无法确定资料名称时，不写名称，直接写条号。
-    【资料】
-    {context}"""
+GEN_SYSTEM_PROMPT = get_prompt("gen")
 
 
 # 生产问答链路（同步实现）：检索 → prompt → 生成，消息落库。
@@ -120,7 +83,12 @@ def generateAnswer(question: str, conversation_id: int, top_k: int) -> tuple:
 
     # 模型适配层不支持异步路径，这里保持同步 invoke（链内有 sync-only 组件）
     chain_input = {"input": question, "context": content}
-    config = {"configurable": {"session_id": str(conversation_id)}}
+    config = trace_config(
+        {"configurable": {"session_id": str(conversation_id)}},
+        tags=["generate"],
+        trace_name="generate",
+        session_id=str(conversation_id),
+    )
     answer = with_history.invoke(chain_input, config=config)
 
     # 免费档模型偶发返回空串（45 题实测 1 次），空回答对用户等同于故障，重试一次

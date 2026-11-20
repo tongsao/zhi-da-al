@@ -11,6 +11,8 @@ from sqlalchemy import select, update
 from agent.initChatModel import getEasyMode
 from model.initDataBase import db_session
 from model.models import zd_ai_check_result, zd_ai_check_rule, zd_project_info
+from observability import trace_config
+from prompts import get_prompt
 
 # 季报 PDF 通常十几页，全文喂给模型既慢又贵；关键字段集中在首页与财务摘要，
 # 截断到前 3 万字符（约 1.5 万 token）足够覆盖，超出部分不参与抽取
@@ -20,18 +22,7 @@ NAME_SUFFIXES = ("股份有限公司", "有限责任公司", "有限公司")
 DEFAULT_AMOUNT_TOLERANCE = Decimal("0.01")
 
 EXTRACT_PROMPT = ChatPromptTemplate.from_messages([
-    ("system", (
-        "你是季报披露文件的信息抽取器。从用户提供的 PDF 文本中抽取字段，只输出 JSON，不要解释。\n"
-        "输出格式：\n"
-        '{{"year":<整数或null>,"quarter":<1-4或null>,"disclosure_date":"<YYYY-MM-DD或null>",'
-        '"amount":<数字或null>,"discloser":"<字符串或null>","title":"<字符串或null>"}}\n'
-        "规则：\n"
-        "1) amount 统一换算为「元」，输出纯数字（如「1.2亿元」→ 120000000），去除千分位与货币符号；\n"
-        "2) year/quarter 由披露日期所在年月推导：1-3月→1，4-6月→2，7-9月→3，10-12月→4；\n"
-        "3) disclosure_date 统一为 YYYY-MM-DD；\n"
-        "4) title 为公告标题原文，不要加书名号；\n"
-        "5) 任何字段在原文中找不到就输出 null，禁止猜测或编造。"
-    )),
+    ("system", get_prompt("extract")),
     ("human", "【PDF 文本】\n{text}"),
 ])
 
@@ -133,7 +124,10 @@ def readPdfText(file_path: str) -> str:
 
 
 def extractFields(text: str) -> dict:
-    raw = extract_chain.invoke({"text": text})
+    raw = extract_chain.invoke(
+        {"text": text},
+        config=trace_config(tags=["ai-check"], trace_name="ai-check-extract"),
+    )
     payload = parseJson(raw)
     return {
         "year": _asInt(payload.get("year")),

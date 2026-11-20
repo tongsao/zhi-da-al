@@ -14,6 +14,8 @@ from agent.initChatModel import getEasyMode, getModel, getRiskGuard
 from agent.rag.initRag import getVector
 from model.initDataBase import db_session
 from model.models import messageInfo
+from observability import trace_config
+from prompts import get_prompt
 from service.chatService import GEN_SYSTEM_PROMPT, format_docs, get_session_history
 from service.ragFileService import COARSE_K, COARSE_KEEP, getBm25Retriever, rerankChunks
 
@@ -48,19 +50,8 @@ def queryRewriteNode(state:messageGraphState):
     # 获取最近2次聊天历史
     last_msg =state['messages'][-4:]
 
-    # 进行改写
-    systemText = """
-        你是证券法规知识库的查询优化助手。将用户问题改写成适合检索的书面查询。
-        规则：
-        1) 结合历史消息进行改写，如果历史消息和本次问题不相关就不用参考
-        2) 保留精确法条号、主体（董事/监事/股东/高管）、动作（召集/表决/披露/担保）；
-        3) 保留问题原有的行业、机构和范围限定（如证券公司、本公司），不得扩展成公司法、证券法
-        等通用法律语境，也不得替换或新增主体；
-        4) 补充多轮对话中缺失的主体和指代；
-        5) 去除口语、闲聊、重复词；
-        6) 不得引入原问题之外的概念、制度名称或条文号；
-        7) 只输出一行改写后的查询，不解释不回答。 
-        """
+    # 进行改写（口径统一在 prompts.py 管理，改版本只动 CURRENT）
+    systemText = get_prompt("rewrite")
 
     prompt = ChatPromptTemplate.from_messages(
         [
@@ -73,7 +64,10 @@ def queryRewriteNode(state:messageGraphState):
     llm = getEasyMode()
 
     chain = prompt | llm |StrOutputParser()
-    requestion = chain.invoke({"history":last_msg,"input":question})
+    requestion = chain.invoke(
+        {"history": last_msg, "input": question},
+        config=trace_config(tags=["rewrite"], trace_name="rewrite"),
+    )
 
     return {
         "requestion":requestion
