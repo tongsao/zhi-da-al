@@ -72,10 +72,10 @@ frontend/static/…               校验列表页 / 明细页 / 规则配置页�
 > `check_detail` JSON 结构（每条启用规则一个对象，key 与人工校验规则编号一致）：
 > ```json
 > {
->   "disclosure_date": {"pdf": {"year":2026,"quarter":3,"raw":"2026年三季度"}, "db": {"year":2026,"quarter":3}, "result": "MATCH", "reason": ""},
+>   "disclosure_date": {"pdf": {"year":2026,"quarter":3}, "db": {"year":2026,"quarter":3}, "result": "MATCH", "reason": ""},
 >   "amount":         {"pdf": 123000000.00, "db": 123000000.00, "result": "MATCH", "reason": ""},
 >   "discloser":      {"pdf": "某某证券", "db": "某某证券股份有限公司", "result": "MISMATCH", "reason": "PDF中未提取到该字段"},
->   "title":          {"pdf": null, "db": "某某证券2026年三季度报告.pdf", "result": "MISMATCH", "reason": "PDF中未提取到该字段"}
+>   "title":          {"pdf": null, "db": "某某证券2026年三季度报告", "result": "MISMATCH", "reason": "PDF中未提取到该字段"}
 > }
 > ```
 > result 枚举：`MATCH`（一致）/ `MISMATCH`（不一致）/ `SKIP`（规则未启用，不进入比对）。
@@ -116,9 +116,10 @@ frontend/static/…               校验列表页 / 明细页 / 规则配置页�
 | POST | /api/v1/ai-check/files | PDF 推送（multipart，含 project_id） | 已实现 |
 | GET | /api/v1/ai-check/projects | 项目分页列表 | 已实现 |
 | GET | /api/v1/ai-check/projects/{project_id} | 项目详情 | 已实现 |
-| GET | /api/v1/ai-check/results | 校验记录分页列表（可带 status/project_id 过滤） | 已实现 |
-| GET | /api/v1/ai-check/results/{result_id} | 单条校验明细（含 check_detail） | **本期新增** |
+| GET | /api/v1/ai-check/results | 校验记录分页列表（默认每项目最新一条；latest_only=false 查历史；支持 status/project_id 过滤） | 已实现 |
+| GET | /api/v1/ai-check/results/{result_id} | 单条校验明细（含 check_detail 与项目数据） | **本期新增** |
 | POST | /api/v1/ai-check/results/{result_id}/check | 手动触发校验（异步，立即返回） | **本期新增** |
+| POST | /api/v1/ai-check/results/{result_id}/reset | 重置卡在「校验中」的记录（进程中断遗留） | **本期新增** |
 | GET | /api/v1/ai-check/rules | 规则列表 | 已实现 |
 | PUT | /api/v1/ai-check/rules/{rule_id}/enabled | 规则开关 | 已实现 |
 
@@ -175,7 +176,7 @@ POST /results/{id}/check
 | quarter_match | LLM 输出 year+quarter 与 project.year+project.quarter_type 精确比较 | 均相等 |
 | amount_diff | 双方换算元后 `abs(pdf - db) <= tolerance`，tolerance 取自规则表 3.3 的 tolerance 字段（默认 0.01，业务可调） | 差值在容差内 |
 | name_normalized | 双方去除首尾空白、去除「股份有限公司/有限公司」等后缀后比较 | 归一化后相等 |
-| string_exact | PDF 抽取 title 与 file_name 精确比较（含标点） | 相等 |
+| string_exact | PDF 抽取 title 与文件名**去掉扩展名后**精确比较（标题本身不含 .pdf，其余字符含标点逐字比对） | 相等 |
 
 字段缺失判定（先于比对执行）：
 
@@ -205,21 +206,21 @@ POST /results/{id}/check
 
 ## 8. 前端页面设计
 
-沿用现有页面技术（静态资源 + 原生 JS/现有风格），新增三个页面：
+沿用现有 Vue3 + Element Plus 工程，新增一个页面 `/ai-check`：列表与规则配置两个 Tab，校验明细用抽屉展示。
 
-### 8.1 校验列表页
+### 8.1 校验列表 Tab
 
-- 表格列：项目名称、文件名、最新校验状态（含复检标识）、校验时间、字段摘要
-- 操作：未校验/需复检记录提供「开始校验」
-- 支持按状态筛选、按时间排序；状态徽标四色（pending/in_progress/success/failed/error）
+- 表格列：项目名称、项目ID、披露文件、最新校验状态（含复检标识）、推送时间、校验时间
+- 操作：开始校验 / 重新校验（校验中禁用）、明细、重置（仅校验中）
+- 支持按状态筛选、分页；状态徽标五色（pending/in_progress/success/failed/error）
 
-### 8.2 校验明细页
+### 8.2 校验明细抽屉
 
-- 顶部：文件信息 + 整体状态 + error_msg（异常时展示）
-- 明细区：每字段一行「PDF 抽取值 / 业务数据值 / 结果 / 原因」，缺失显示「未提取到」
-- 提供返回列表
+- 顶部：项目信息 + 文件信息 + 整体状态 + error_msg（异常时展示）
+- 明细区：每字段一行「PDF 抽取值 / 业务数据值 / 结果 / 原因」，缺失显示「未提取到 / 为空」，未启用规则显示「未比对」
+- 底部：该项目校验历史（同一 project_id 的全部记录），点击可切换查看
 
-### 8.3 规则配置页
+### 8.3 规则配置 Tab
 
 - 四行开关（披露日期/金额/披露人/公告标题），切换调用 PUT 接口，即时生效
 - 金额规则额外暴露「容差（元）」输入框，保存到规则表 tolerance 字段（PUT /rules/{id}/enabled 扩展为可同时提交 enabled 与 tolerance）
@@ -229,7 +230,7 @@ POST /results/{id}/check
 ## 9. 部署与配置
 
 - 无新增环境变量；复用 `UPLOAD_FILE_PATH`、`MAX_FILE_SIZE`、`ALLOWED_FILE_EXTENSIONS`
-- PDF 依赖 `pypdf`（PyPDFLoader 的底层，现有环境已具备）
+- PDF 解析依赖 `pypdf`（PyPDFLoader 底层），部署环境需 `pip install pypdf`
 - 数据库变更执行 `DB/ddl/create_ai_check_tables.sql`（更新版）后再部署
 
 ---

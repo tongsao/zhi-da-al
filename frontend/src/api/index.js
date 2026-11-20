@@ -88,11 +88,20 @@ export const deleteDocument = (id) =>
 export const chat = (payload) =>
   request.post('/qa/chat', null, { params: payload, timeout: 120000 })
 
-// 流式问答（SSE）：逐块回调 onChunk(chunkText)，返回 Promise。
-// 后端事件格式：data: {"content":"..."} / data: {"error":"..."} / data: [DONE]
+// 流式问答（SSE）：按事件类型分发回调，返回 Promise。
+// 事件协议（event 名 → data）：
+//   token      {"content":"..."}              模型吐字，打字机追加
+//   tool       {"tools":[...],"hint":"..."}   模型决定调工具，显示「正在查询…」
+//   progress   {"stage","percent","label"}    工具内部阶段进度
+//   interrupt  {"message","detail"}           需要人工审批，停止接收
+//   error      {"message":"..."}              出错 / 超时
+//   done       {"status":"done"}              结束（保底）
+//   data: [DONE]                              流结束标记
+// handlers: { onToken, onTool, onProgress, onInterrupt }
 // axios 不便消费 SSE 流，这里用 fetch 读 ReadableStream 手动解析
 // signal 为 AbortSignal：点「停止」时由调用方传入，abort 后读流被中断、Promise reject
-export const chatStream = (payload, onChunk, signal) => {
+export const chatStream = (payload, handlers, signal) => {
+  const { onToken, onTool, onProgress, onInterrupt } = handlers || {}
   const auth = useAuthStore()
   // SSE 走 fetch 不经 axios 拦截器，Authorization 需手动带；否则中间件 401 拒绝
   return fetch(`/api/v1/qa/chat?${new URLSearchParams({ ...payload, stream: true })}`, {
@@ -120,27 +129,49 @@ export const chatStream = (payload, onChunk, signal) => {
     const decoder = new TextDecoder()
     let buffer = ''
 
-    const parse = async () => {
+    // 返回 true 表示流已终止（done / interrupt / [DONE]），不再继续读
+    const parse = () => {
       let sep
       while ((sep = buffer.indexOf('\n\n')) >= 0) {
         const raw = buffer.slice(0, sep)
         buffer = buffer.slice(sep + 2)
-        const dataLine = raw.split('\n').find((l) => l.startsWith('data: '))
-        if (!dataLine) continue
-        const data = dataLine.slice(6).trim()
-        if (data === '[DONE]') return
+
+        let eventName = 'message'
+        const dataLines = []
+        for (const line of raw.split('\n')) {
+          if (line.startsWith('event: ')) eventName = line.slice(7).trim()
+          else if (line.startsWith('data: ')) dataLines.push(line.slice(6))
+        }
+        const data = dataLines.join('\n').trim()
+        if (!data) continue
+        if (data === '[DONE]') return true
+
         let body
         try { body = JSON.parse(data) } catch { continue }
-        if (body.error) throw new Error(body.error)
-        if (body.content) onChunk(body.content)
+
+        if (eventName === 'token') { if (body.content) onToken?.(body.content) }
+        else if (eventName === 'tool') onTool?.(body)
+        else if (eventName === 'progress') onProgress?.(body)
+        else if (eventName === 'interrupt') { onInterrupt?.(body); return true }
+        else if (eventName === 'error') throw new Error(body.message || '生成失败')
+        else if (eventName === 'done') return true
+        else {
+          // 兼容仅有 data、无 event 名的旧格式
+          if (body.error) throw new Error(body.error)
+          if (body.content) onToken?.(body.content)
+        }
       }
+      return false
     }
 
     const pump = async () => {
       const { done, value } = await reader.read()
-      if (done) { await parse(); return }
+      if (done) { parse(); return }
       buffer += decoder.decode(value, { stream: true })
-      await parse()
+      if (parse()) {
+        try { await reader.cancel() } catch { /* 连接已断开，忽略 */ }
+        return
+      }
       return pump()
     }
     return pump()
@@ -222,6 +253,31 @@ export const rerunGenEval = (runId, indexes) =>
 // ===== 健康检查 =====
 export const checkHealth = () =>
   request.get('/health')
+
+// ===== AI 质检（季报披露文件校验）=====
+// 校验列表：默认每项目最新一条；latest_only=false 查历史
+export const listCheckResults = (params = {}) =>
+  request.get('/ai-check/results', { params })
+
+// 单条校验明细（含逐字段比对结果）
+export const getCheckResult = (id) =>
+  request.get(`/ai-check/results/${id}`)
+
+// 手动触发校验：异步执行，触发后靠 getCheckResult 轮询状态
+export const triggerCheck = (id) =>
+  request.post(`/ai-check/results/${id}/check`)
+
+// 重置卡在「校验中」的记录（进程中断遗留）
+export const resetCheck = (id) =>
+  request.post(`/ai-check/results/${id}/reset`)
+
+// 校验规则列表（全局一套，业务可开关）
+export const listCheckRules = () =>
+  request.get('/ai-check/rules')
+
+// 规则开关；金额规则可同时提交容差 tolerance
+export const updateCheckRule = (id, enabled, tolerance) =>
+  request.put(`/ai-check/rules/${id}/enabled`, null, { params: { enabled, tolerance } })
 
 // gateway.js 等模块以 request 为唯一入口复用实例
 export default request

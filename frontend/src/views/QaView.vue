@@ -158,7 +158,8 @@
               <span class="thinking-dot"></span>
               <span class="thinking-dot"></span>
               <span class="thinking-dot"></span>
-              <span class="thinking-text">思考中</span>
+              <span class="thinking-text">{{ toolHint || '思考中' }}</span>
+              <span v-if="progress > 0" class="thinking-stage">{{ progressLabel }} {{ progress }}%</span>
             </div>
           </div>
         </div>
@@ -235,6 +236,10 @@ const question = ref('')
 const loading = ref(false)
 // 流式期间为 true：首个 token 到达后收起"思考中"骨架，让占位回答气泡原地逐字生长
 const streaming = ref(false)
+// tool / progress 事件：首个 token 之前展示「正在查询…」与工具内部进度
+const toolHint = ref('')
+const progress = ref(0)
+const progressLabel = ref('')
 // 当前流式请求的 AbortController，供「停止」按钮掐断连接
 let activeController = null
 // 用户点停止：catch 分支保留已生成文本，不覆盖成错误；每次发送前重置
@@ -350,6 +355,9 @@ const onSend = async () => {
   store.pushMessage({ role: 'user', content: q, createdAt: new Date().toISOString() })
   question.value = ''
   loading.value = true
+  toolHint.value = ''
+  progress.value = 0
+  progressLabel.value = ''
   await scrollToBottom()
 
   // 每次消息都有平滑滚动动画，逐 token 触发会抖动，限频 100ms 再滚
@@ -371,22 +379,47 @@ const onSend = async () => {
     // stream=true 走 SSE，首个 token 到达即亮出答案气泡、收起骨架
     await chatStream(
       { question: q, conversation_id: store.conversationId, top_k: 6 },
-      (chunk) => {
-        if (!botMsg) {
-          streaming.value = true
-          store.pushMessage({
+      {
+        onToken: (chunk) => {
+          if (!botMsg) {
+            streaming.value = true
+            store.pushMessage({
+              role: 'assistant',
+              content: '',
+              question: q,
+              feedback: null,
+              createdAt: new Date().toISOString()
+            })
+            // 注意不能用 push 前的对象引用：push 进 reactive 数组后 Vue 会再包一层代理，
+            // 直接改原对象不会触发视图更新，必须改数组里取出的代理。
+            botMsg = store.messages[store.messages.length - 1]
+          }
+          botMsg.content += chunk
+          scrollWhileStreaming()
+        },
+        // 模型决定调工具：思考气泡显示「正在查询…」
+        onTool: (info) => {
+          toolHint.value = info?.hint || '正在处理…'
+        },
+        // 工具内部阶段进度：重排/检索等节点完成时刷新百分比
+        onProgress: (info) => {
+          progress.value = info?.percent || 0
+          progressLabel.value = info?.label || ''
+          scrollWhileStreaming()
+        },
+        // 需要人工审批：后端只做协议透传，这里停止接收并给用户明确提示
+        onInterrupt: (info) => {
+          const notice = info?.message || '该请求需要人工审批，已暂停接收'
+          if (botMsg) botMsg.content += `\n\n> ${notice}`
+          else store.pushMessage({
             role: 'assistant',
-            content: '',
+            content: notice,
             question: q,
             feedback: null,
             createdAt: new Date().toISOString()
           })
-          // 注意不能用 push 前的对象引用：push 进 reactive 数组后 Vue 会再包一层代理，
-          // 直接改原对象不会触发视图更新，必须改数组里取出的代理。
-          botMsg = store.messages[store.messages.length - 1]
+          streaming.value = true
         }
-        botMsg.content += chunk
-        scrollWhileStreaming()
       },
       controller.signal
     )
@@ -667,6 +700,10 @@ onMounted(loadConversations)
 .thinking-dot:nth-child(3) { animation-delay: 0.3s; }
 .thinking-text {
   margin-left: 8px; font-size: 13px; color: var(--color-text-muted);
+}
+/* 工具内部阶段进度：改写/检索/重排/生成 的百分比 */
+.thinking-stage {
+  margin-left: 6px; font-size: 12px; color: var(--color-primary);
 }
 @keyframes thinking-bounce {
   0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }

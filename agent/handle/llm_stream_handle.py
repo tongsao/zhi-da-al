@@ -23,8 +23,9 @@ from typing import AsyncIterator, Callable, Optional
 
 # ---- 类型别名：让函数签名一眼看懂 ----
 # 生成器工厂：传入「已生成的前缀文字」，返回一个新的异步生成器（产出后续文字片段）。
+# 生成器产出的也允许是 dict（tool / progress / interrupt 透传事件）。
 # 重试时工具会用它带着前缀重新开始，保证已发出的内容不重复生成。
-StreamFactory = Callable[[str], AsyncIterator[str]]
+StreamFactory = Callable[[str], AsyncIterator[str | dict]]
 
 # 断流探测函数：返回客户端当前是否已断开连接。
 # FastAPI 里直接传 request.is_disconnected 即可（它本身是异步方法，也能用）。
@@ -261,6 +262,12 @@ class StreamHandle:
                             session.status = Status.UPSTREAM_ERROR
                         break
 
+                    # 透传型事件（tool / progress / interrupt）不是答案文字：
+                    # 不计入 sent_parts、不参与重试前缀，直接向上游调用方转发
+                    if isinstance(text_piece, dict):
+                        yield text_piece
+                        continue
+
                     sent_parts.append(text_piece)
                     yield {"type": "delta", "text": text_piece,
                            "session_id": session.session_id}
@@ -393,7 +400,9 @@ class StreamHandle:
         remaining_parts: list[str] = []
         try:
             async for text_piece in answer_stream:
-                remaining_parts.append(text_piece)
+                # 后台 drain 只关心答案正文，透传事件（tool/progress）丢弃
+                if isinstance(text_piece, str):
+                    remaining_parts.append(text_piece)
         except Exception:
             pass  # 后台 drain 失败不致命，保留已收到的部分
         finally:

@@ -11,6 +11,7 @@ const routes = [
   { path: '/qa', component: () => import('@/views/QaView.vue'), meta: { requiresAuth: true, title: '智能问答' } },
   { path: '/documents', component: () => import('@/views/DocumentsView.vue'), meta: { requiresAuth: true, title: '知识库管理' } },
   { path: '/kb', component: () => import('@/views/KbView.vue'), meta: { requiresAuth: true, title: '知识库维护' } },
+  { path: '/ai-check', component: () => import('@/views/AiCheckView.vue'), meta: { requiresAuth: true, title: '季报AI质检' } },
   { path: '/eval', redirect: '/eval/hit-rate', meta: { requiresAuth: true } },
   { path: '/eval/hit-rate', component: () => import('@/views/EvalView.vue'), meta: { requiresAuth: true, title: '回答命中率 hit_rate' } },
   // 召回率与 MRR 同属检索质量，合并为一页

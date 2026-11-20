@@ -142,17 +142,64 @@ async def saveCheckFile(project_id: str, file: UploadFile):
     return {"result_id": result.id, "file_name": fileName, "status": result.status}
 
 
-def listCheckResults(page: int, page_size: int):
+def listCheckResults(page: int, page_size: int, status: str = None,
+                     project_id: str = None, latest_only: bool = True):
+    """校验记录列表。默认每个项目只取最新一条；查历史时传 latest_only=false。"""
     with db_session() as db:
-        total = db.execute(select(func.count()).select_from(zd_ai_check_result)).scalar()
-        query = (
-            select(zd_ai_check_result)
-            .order_by(zd_ai_check_result.create_date.desc())
+        stmt = select(zd_ai_check_result, zd_project_info.project_name).outerjoin(
+            zd_project_info, zd_project_info.project_id == zd_ai_check_result.project_id
+        )
+        if latest_only:
+            # 同项目多次推送会留多条记录，列表页只关心当前状态，取 id 最大的那条
+            latest_ids = select(func.max(zd_ai_check_result.id)).group_by(zd_ai_check_result.project_id)
+            stmt = stmt.where(zd_ai_check_result.id.in_(latest_ids))
+        if status:
+            stmt = stmt.where(zd_ai_check_result.status == status)
+        if project_id:
+            stmt = stmt.where(zd_ai_check_result.project_id == project_id)
+
+        total = db.execute(select(func.count()).select_from(stmt.subquery())).scalar()
+        rows = db.execute(
+            stmt.order_by(zd_ai_check_result.create_date.desc())
             .offset((page - 1) * page_size)
             .limit(page_size)
-        )
-        results = db.execute(query).scalars().all()
-    return {"total": total, "items": [_result_to_dict(r) for r in results]}
+        ).all()
+
+    items = [{**_result_to_dict(r), "project_name": project_name} for r, project_name in rows]
+    return {"total": total, "items": items}
+
+
+def getCheckResult(result_id: int):
+    with db_session() as db:
+        result = db.execute(
+            select(zd_ai_check_result).where(zd_ai_check_result.id == result_id)
+        ).scalars().first()
+        if not result:
+            raise Exception("校验记录不存在")
+        project = db.execute(
+            select(zd_project_info).where(zd_project_info.project_id == result.project_id)
+        ).scalars().first()
+    return {
+        **_result_to_dict(result),
+        "project_name": project.project_name if project else None,
+        "project": _project_to_dict(project) if project else None,
+    }
+
+
+def resetCheckResult(result_id: int):
+    """校验中进程中断时留下的 in_progress 记录，允许人工复位为待校验。"""
+    with db_session() as db:
+        row = db.execute(
+            select(zd_ai_check_result).where(zd_ai_check_result.id == result_id)
+        ).scalars().first()
+        if not row:
+            raise Exception("校验记录不存在")
+        if row.status != "in_progress":
+            raise Exception("仅校验中的记录可重置")
+        row.status = "pending"
+        row.error_msg = None
+        db.commit()
+    return {"result_id": result_id, "status": "pending"}
 
 
 def _result_to_dict(result):

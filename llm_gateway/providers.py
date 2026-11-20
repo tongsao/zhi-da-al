@@ -16,10 +16,11 @@ langfuse_handler = CallbackHandler()
 def _build_chat(model_name: str, temperature: float):
     inner = init_chat_model(
         model=f"openai:{model_name}",
-        api_key=config.GOAI_API_KEY,
-        base_url=config.GOAI_BASE_URL,
+        api_key=config.DEEPSEEK_API_KEY,
+        base_url=config.DEEPSEEK_BASE_URL,
         temperature=temperature,
-        timeout=180,
+        # 单次模型调用 30s 封顶：超时由 with_retry 兜底，避免上游挂死把整条链路拖住
+        timeout=30,
     )
     inner = inner.with_config({"callbacks": [langfuse_handler]})
     # 仅重试瞬时错误，业务 4xx 不重试；指数退避由 LangChain 内部处理
@@ -37,10 +38,10 @@ _embedding = None
 
 
 def get_chat() -> CountingChatModel:
-    """主生成模型 glm-5.3（temp=0.5），返回计数代理包装实例。"""
+    """主生成模型 deepseek-v4.1-flash-1017（temp=0.5），返回计数代理包装实例。"""
     global _chat
     if _chat is None:
-        inner = _build_chat("glm-5.3", 0.5)
+        inner = _build_chat("deepseek-v4.1-flash-1017", 0.5)
         if config.GATEWAY_MODEL_FALLBACK:
             inner = inner.with_fallbacks([_rewrite_inner()])
         _chat = CountingChatModel(inner, "chat")
@@ -48,7 +49,7 @@ def get_chat() -> CountingChatModel:
 
 
 def get_rewrite() -> CountingChatModel:
-    """轻量/改写模型 glm-5.3-flash（temp=0.3），返回计数代理包装实例。"""
+    """轻量/改写模型 deepseek-v4.1-flash-1017（temp=0.3），返回计数代理包装实例。"""
     global _rewrite
     if _rewrite is None:
         _rewrite = CountingChatModel(_rewrite_inner(), "rewrite")
@@ -56,7 +57,7 @@ def get_rewrite() -> CountingChatModel:
 
 
 def _rewrite_inner():
-    return _build_chat("glm-5.3-flash", 0.3)
+    return _build_chat("deepseek-v4.1-flash-1017", 0.3)
 
 
 def get_embedding() -> CountingEmbeddingModel:

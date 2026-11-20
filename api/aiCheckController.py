@@ -3,14 +3,17 @@ from fastapi.params import File
 
 from schema.schemas import Response
 from service.aiCheckService import (
+    getCheckResult,
     getProjectInfo,
     getRules,
     listCheckResults,
     listProjectInfo,
+    resetCheckResult,
     saveCheckFile,
     saveProjectInfo,
     updateRuleEnabled,
 )
+from service.aiCheckCoreService import startCheck
 
 router = APIRouter(prefix="/api/v1/ai-check", tags=["AI质检"])
 
@@ -61,11 +64,48 @@ async def push_check_file(project_id: str, file: UploadFile = File(...)):
         return response
 
 
-# 质检结果状态列表（含文件信息与校验状态）
+# 质检结果状态列表（默认每项目最新一条；latest_only=false 查历史）
 @router.get("/results")
-def get_check_results(page: int = 1, page_size: int = 10):
+def get_check_results(page: int = 1, page_size: int = 10, status: str = None,
+                      project_id: str = None, latest_only: bool = True):
     try:
-        return listCheckResults(page, page_size)
+        return listCheckResults(page, page_size, status, project_id, latest_only)
+    except Exception as e:
+        response = Response()
+        response.code = "5001"
+        response.message = str(e)
+        return response
+
+
+# 单条校验记录明细（含逐字段比对结果）
+@router.get("/results/{result_id}")
+def get_check_result(result_id: int):
+    try:
+        return getCheckResult(result_id)
+    except Exception as e:
+        response = Response()
+        response.code = "5001"
+        response.message = str(e)
+        return response
+
+
+# 手动触发校验：异步执行，前端轮询明细接口取进度
+@router.post("/results/{result_id}/check")
+def trigger_check(result_id: int):
+    try:
+        return startCheck(result_id)
+    except Exception as e:
+        response = Response()
+        response.code = "5001"
+        response.message = str(e)
+        return response
+
+
+# 重置卡在「校验中」的记录（进程中断遗留）
+@router.post("/results/{result_id}/reset")
+def reset_check_result(result_id: int):
+    try:
+        return resetCheckResult(result_id)
     except Exception as e:
         response = Response()
         response.code = "5001"

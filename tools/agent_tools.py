@@ -1,7 +1,9 @@
 from operator import add
 
 from langchain.agents import create_agent
+from langchain.agents.middleware import ModelCallLimitMiddleware, ToolCallLimitMiddleware
 from langchain_core.tools import tool
+from langgraph.config import get_stream_writer
 from langgraph.constants import END, START
 from langgraph.graph import StateGraph
 from langgraph.prebuilt import InjectedState
@@ -50,6 +52,15 @@ def _getCompiledGraph():
     return _compiled_graph
 
 
+# graphAnswer 内各阶段完成时上报的进度：节点名 → (百分比, 展示文案)
+_GRAPH_PROGRESS_STEPS = {
+    "queryRewriteNode": (20, "改写问题"),
+    "queryBm25AndvectorNode": (50, "双路检索"),
+    "reRankNode": (75, "重排排序"),
+    "chatMessageNode": (100, "生成完成"),
+}
+
+
 @tool
 def graphAnswer(
     question: str,
@@ -78,13 +89,21 @@ def graphAnswer(
     # 复用进程级编译图：首次惰性编译，之后每次问答省去建图+编译（约秒级）
     graphDo = _getCompiledGraph()
     historyMessage = get_session_history(str(conversation_id))
-    result = graphDo.invoke({
+    # 工具内部的阶段进度通过 LangGraph custom 流推给前端；非流式调用时写入为空操作
+    streamWriter = get_stream_writer()
+
+    result = {}
+    for nodeUpdate in graphDo.stream({
         "question":question,
         "conversation_id":conversation_id,
         "top_k":top_k,
         # 图内节点按消息列表切片取历史，传实例（SQLChatMessageHistory 不可切片）会直接崩
         "messages":historyMessage.messages
-    })
+    }, stream_mode="updates"):
+        for nodeName, delta in nodeUpdate.items():
+            result.update(delta or {})
+            percent, label = _GRAPH_PROGRESS_STEPS[nodeName]
+            streamWriter({"stage": nodeName, "percent": percent, "label": label})
 
     return result["answer"]
 
@@ -171,6 +190,14 @@ def queryLlmAsJudgeResult():
 
 AGENT_TOOLS = [graphAnswer, queryReCalAndMrr, queryLlmAsJudgeResult]
 
+# 工具名 → 前端提示文案：与工具定义同文件维护，新增工具时不会漏改。
+# 接口层只 import 使用，不再硬编码工具名单。
+TOOL_HINTS = {
+    "graphAnswer": "正在检索知识库…",
+    "queryReCalAndMrr": "正在读取检索评估结果…",
+    "queryLlmAsJudgeResult": "正在读取生成评估结果…",
+}
+
 _agent = None  # 进程级单例：Agent 编译开销大，且多请求共用一个图即可
 
 
@@ -190,5 +217,17 @@ def getChatAgent():
                 "4. 回答必须忠于知识库资料，不得编造，资料中没有就明说。"
             ),
             checkpointer=checkpointer,
+            # 防死循环（按实际链路校准）：
+            # ■ 模型调用：正常一轮是「决策→作答」2 次，多意图顶多 3 次，4 次只给参数纠错留一次余量；
+            #   超限直接 end，不再让模型空转。
+            # ■ 工具调用：一轮最多 3 次，够覆盖「问答 + 两个评估工具」的组合，再多必是重复调用。
+            # ■ graphAnswer 单轮 1 次：它内部是完整 RAG 链路（改写+双路检索+重排+生成），
+            #   重复调用每次至少十几秒，很容易吃满 chatController 的 120s 流式总预算。
+            # 不设 thread_limit：会话状态跨轮持久化（SqliteSaver），按线程累计会误伤长会话。
+            middleware=[
+                ModelCallLimitMiddleware(run_limit=4, exit_behavior="end"),
+                ToolCallLimitMiddleware(run_limit=3, exit_behavior="continue"),
+                ToolCallLimitMiddleware(tool_name="graphAnswer", run_limit=1, exit_behavior="continue"),
+            ],
         )
     return _agent

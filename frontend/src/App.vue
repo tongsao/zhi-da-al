@@ -139,7 +139,7 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {
   ChatDotRound, Document, DataAnalysis, Histogram, RefreshRight,
-  Setting, ArrowDown, Lock, SwitchButton
+  Setting, ArrowDown, Lock, SwitchButton, CircleCheck
 } from '@element-plus/icons-vue'
 import { useAuthStore } from '@/stores/auth'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -217,6 +217,7 @@ const allNavItems = [
   { path: '/qa',        label: '智能问答',    icon: ChatDotRound  },
   { path: '/documents', label: '知识库管理',  icon: Document      },
   { path: '/kb',        label: '知识库维护',  icon: DataAnalysis  },
+  { path: '/ai-check',  label: '季报AI质检',  icon: CircleCheck   },
   {
     path: '/eval', label: '效果评测', icon: Histogram,
     children: [

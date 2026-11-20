@@ -33,8 +33,8 @@ GATEWAY_MODEL_FALLBACK = os.getenv("GATEWAY_MODEL_FALLBACK", "false").lower() in
 MODEL_CONTEXT_INPUT_CHARS = _int("MODEL_CONTEXT_INPUT_CHARS", 6000)  # 单次调用输入估算（字符）
 
 # 模型（与 agent/initChatModel.py 取值一致）
-GOAI_API_KEY = os.getenv("GOAI_API_KEY", "")
-GOAI_BASE_URL = os.getenv("GOAI_BASE_URL", "")
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "")
+DEEPSEEK_BASE_URL = os.getenv("DEEPSEEK_BASE_URL", "")
 QWEN_API_KEY = os.getenv("QWEN_API_KEY", "")
 
 
